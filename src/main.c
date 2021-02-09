@@ -16,7 +16,7 @@ TODO:
 */
 
 int main(int argc, char **argv) {
-  Function *f1 = function_create("f1", TYPE_INT, (Type[]){ TYPE_INT, {NULL} });
+  Function *f1 = function_create("f1");
   
   Context *ctx_if = context_create();
   context_statement_add(ctx_if,
