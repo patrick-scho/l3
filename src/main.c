@@ -22,10 +22,12 @@ int main(int argc, char **argv) {
 
   context_statement_add(f1->ctx,
     statement_create(STMT_IF, (void*[]){
-      expression_create(EXPR_EQUALS, (void*[]){
-        expression_create(EXPR_INT_LITERAL, (void*)1),
-        expression_create(EXPR_INT_LITERAL, (void*)2)
-      }),
+      expression_create(EXPR_NOT, 
+        expression_create(EXPR_LT, (void*[]){
+          expression_create(EXPR_INT_LITERAL, (void*)101),
+          expression_create(EXPR_INT_LITERAL, (void*)102)
+        })
+      ),
       context_create((Statement*[]){
         statement_create(STMT_RETURN,
           expression_create(EXPR_INT_LITERAL, (void*)123)

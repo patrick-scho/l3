@@ -22,6 +22,21 @@ void *expression_run(Expression *expr) {
     return (void*)(
       expression_run(((Expression**)expr->params)[0]) ==
       expression_run(((Expression**)expr->params)[1]));
+  case EXPR_NOT_EQUALS:
+    return (void*)(
+      expression_run(((Expression**)expr->params)[0]) !=
+      expression_run(((Expression**)expr->params)[1]));
+  case EXPR_LT:
+    return (void*)(
+      expression_run(((Expression**)expr->params)[0]) <
+      expression_run(((Expression**)expr->params)[1]));
+  case EXPR_GT:
+    return (void*)(
+      expression_run(((Expression**)expr->params)[0]) >
+      expression_run(((Expression**)expr->params)[1]));
+  case EXPR_NOT:
+    return (void*)(
+      ! expression_run((Expression*)expr->params));
   }
   return NULL;
 }
@@ -29,8 +44,14 @@ void *expression_run(Expression *expr) {
 
 void expression_destroy(Expression *expr) {
   switch (expr->type) {
+  case EXPR_NOT:
+    expression_destroy((Expression*)expr->params);
+    break;
   case EXPR_ADD:
   case EXPR_EQUALS:
+  case EXPR_NOT_EQUALS:
+  case EXPR_LT:
+  case EXPR_GT:
     expression_destroy(((Expression**)expr->params)[0]);
     expression_destroy(((Expression**)expr->params)[1]);
     break;
