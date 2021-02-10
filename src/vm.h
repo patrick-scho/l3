@@ -7,7 +7,9 @@
 // Expression
 
 typedef enum {
-  EXPR_ADD, EXPR_EQUALS, EXPR_NOT_EQUALS, EXPR_INT_LITERAL, EXPR_LT, EXPR_GT, EXPR_NOT
+  EXPR_ADD, EXPR_SUB, EXPR_MUL, EXPR_DIV,
+  EXPR_EQUALS, EXPR_NOT_EQUALS, EXPR_LT, EXPR_GT, EXPR_NOT,
+  EXPR_INT_LITERAL
 } ExpressionType;
 typedef struct {
   ExpressionType type;

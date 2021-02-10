@@ -16,6 +16,18 @@ void *expression_run(Expression *expr) {
     return (void*)(
       (int)expression_run(((Expression**)expr->params)[0]) +
       (int)expression_run(((Expression**)expr->params)[1]));
+  case EXPR_SUB:
+    return (void*)(
+      (int)expression_run(((Expression**)expr->params)[0]) -
+      (int)expression_run(((Expression**)expr->params)[1]));
+  case EXPR_MUL:
+    return (void*)(
+      (int)expression_run(((Expression**)expr->params)[0]) *
+      (int)expression_run(((Expression**)expr->params)[1]));
+  case EXPR_DIV:
+    return (void*)(
+      (int)expression_run(((Expression**)expr->params)[0]) /
+      (int)expression_run(((Expression**)expr->params)[1]));
   case EXPR_INT_LITERAL:
     return (void*)expr->params;
   case EXPR_EQUALS:
@@ -48,6 +60,9 @@ void expression_destroy(Expression *expr) {
     expression_destroy((Expression*)expr->params);
     break;
   case EXPR_ADD:
+  case EXPR_SUB:
+  case EXPR_MUL:
+  case EXPR_DIV:
   case EXPR_EQUALS:
   case EXPR_NOT_EQUALS:
   case EXPR_LT:
