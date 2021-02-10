@@ -23,7 +23,7 @@ void expression_destroy(Expression *expr);
 // Statement
 
 typedef enum {
-  STMT_EXPR, STMT_RETURN, STMT_IF
+  STMT_EXPR, STMT_RETURN, STMT_IF, STMT_CTX
 } StatementType;
 typedef struct {
   StatementType type;

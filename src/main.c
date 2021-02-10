@@ -20,30 +20,50 @@ TODO:
 int main(int argc, char **argv) {
   Function *f1 = function_create("f1");
 
+  // context_statement_add(f1->ctx,
+  //   statement_create(STMT_IF, (void*[]){
+  //     expression_create(EXPR_NOT, 
+  //       expression_create(EXPR_LT, (void*[]){
+  //         expression_create(EXPR_INT_LITERAL, (void*)101),
+  //         expression_create(EXPR_INT_LITERAL, (void*)102)
+  //       })
+  //     ),
+  //     context_create((Statement*[]){
+  //       statement_create(STMT_RETURN,
+  //         expression_create(EXPR_INT_LITERAL, (void*)123)
+  //       ),
+  //       NULL
+  //     })
+  //   })
+  // );
+  // context_statement_add(f1->ctx,
+  //   statement_create(STMT_RETURN,
+  //     expression_create(EXPR_ADD, (void*[]){
+  //       expression_create(EXPR_SUB, (void*[]){
+  //         expression_create(EXPR_INT_LITERAL, (void*)12),
+  //         expression_create(EXPR_INT_LITERAL, (void*)34)
+  //       }),
+  //       expression_create(EXPR_INT_LITERAL, (void*)1000)
+  //     })
+  //   )
+  // );
   context_statement_add(f1->ctx,
-    statement_create(STMT_IF, (void*[]){
-      expression_create(EXPR_NOT, 
-        expression_create(EXPR_LT, (void*[]){
-          expression_create(EXPR_INT_LITERAL, (void*)101),
-          expression_create(EXPR_INT_LITERAL, (void*)102)
-        })
-      ),
+    statement_create(STMT_CTX,
       context_create((Statement*[]){
-        statement_create(STMT_RETURN,
-          expression_create(EXPR_INT_LITERAL, (void*)123)
+        statement_create(STMT_CTX,
+          context_create((Statement*[]){
+            statement_create(STMT_CTX,
+              context_create((Statement*[]){
+                statement_create(STMT_RETURN,
+                  expression_create(EXPR_INT_LITERAL, (void*)125)
+                ),
+                NULL
+              })
+            ),
+            NULL
+          })
         ),
         NULL
-      })
-    })
-  );
-  context_statement_add(f1->ctx,
-    statement_create(STMT_RETURN,
-      expression_create(EXPR_ADD, (void*[]){
-        expression_create(EXPR_ADD, (void*[]){
-          expression_create(EXPR_INT_LITERAL, (void*)12),
-          expression_create(EXPR_INT_LITERAL, (void*)34)
-        }),
-        expression_create(EXPR_INT_LITERAL, (void*)34)
       })
     )
   );
