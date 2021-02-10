@@ -13,18 +13,12 @@ TODO:
 - return Value struct
 - parameters
 - more expr/stmt
+- STMT_CONTEXT
 
 */
 
 int main(int argc, char **argv) {
   Function *f1 = function_create("f1");
-  
-  Context *ctx_if = context_create();
-  context_statement_add(ctx_if,
-    statement_create(STMT_RETURN,
-      expression_create(EXPR_INT_LITERAL, (void*)123)
-    )
-  );
 
   context_statement_add(f1->ctx,
     statement_create(STMT_IF, (void*[]){
@@ -32,7 +26,12 @@ int main(int argc, char **argv) {
         expression_create(EXPR_INT_LITERAL, (void*)1),
         expression_create(EXPR_INT_LITERAL, (void*)2)
       }),
-      ctx_if
+      context_create((Statement*[]){
+        statement_create(STMT_RETURN,
+          expression_create(EXPR_INT_LITERAL, (void*)123)
+        ),
+        NULL
+      })
     })
   );
   context_statement_add(f1->ctx,

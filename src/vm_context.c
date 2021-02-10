@@ -2,10 +2,13 @@
 
 #include "vm.h"
 
-Context *context_create() {
+Context *context_create(Statement **stmts) {
   Context *result = malloc(sizeof *result);
 
   result->statements = NULL;
+  if (stmts != NULL)
+    for (int i = 0; stmts[i] != NULL; i++)
+      arrput(result->statements, stmts[i]);
 
   return result;
 }
