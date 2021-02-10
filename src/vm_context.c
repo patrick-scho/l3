@@ -5,21 +5,20 @@
 Context *context_create() {
   Context *result = malloc(sizeof *result);
 
-  vec_init(&result->statements);
+  result->statements = NULL;
 
   return result;
 }
 
 
 void context_statement_add(Context *ctx, Statement *stmt) {
-  vec_push(&ctx->statements, stmt);
+  arrput(ctx->statements, stmt);
 }
 
 
 void *context_run(Context *ctx) {
-  Statement *stmt; int i;
-  vec_foreach (&ctx->statements, stmt, i) {
-    void *result = statement_run(stmt);
+  for (int i = 0; i < arrlen(ctx->statements); i++) {
+    void *result = statement_run(ctx->statements[i]);
     if (result != NULL)
       return result;
   }
@@ -28,10 +27,9 @@ void *context_run(Context *ctx) {
 
 
 void context_destroy(Context *ctx) {
-  Statement *stmt; int i;
-  vec_foreach(&ctx->statements, stmt, i) {
-    statement_destroy(stmt);
+  for (int i = 0; i < arrlen(ctx->statements); i++) {
+    statement_destroy(ctx->statements[i]);
   }
-  vec_deinit(&ctx->statements);
+  arrfree(ctx->statements);
   free(ctx);
 }

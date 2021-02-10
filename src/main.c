@@ -1,8 +1,9 @@
 #include <stdio.h>
 
-#include <vec.h>
-
 #include "vm.h"
+
+#define STB_DS_IMPLEMENTATION
+#include <stb_ds.h>
 
 /*
 

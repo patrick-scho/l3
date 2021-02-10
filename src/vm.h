@@ -2,7 +2,7 @@
 
 #include <stdbool.h>
 
-#include <vec.h>
+#include <stb_ds.h>
 
 // Expression
 
@@ -34,10 +34,8 @@ void statement_destroy(Statement *stmt);
 
 // Context
 
-typedef vec_t(Statement*) Statement_vec;
-
 typedef struct {
-  Statement_vec statements;
+  Statement **statements;
 } Context;
 
 Context *context_create();

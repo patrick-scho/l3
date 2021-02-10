@@ -14,7 +14,7 @@ void *statement_run(Statement *stmt) {
   switch (stmt->type) {
   case STMT_EXPR:
     expression_run((Expression*)(stmt->params));
-    return NULL;
+    break;
   case STMT_RETURN:
     return expression_run((Expression*)(stmt->params));
   case STMT_IF:
