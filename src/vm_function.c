@@ -2,10 +2,11 @@
 
 #include "vm.h"
 
-Function *function_create(const char *name) {
+Function *function_create(Context *ctx, const char *name) {
   Function *result = malloc(sizeof *result);
 
-  result->ctx = context_create();
+  result->name = name;
+  result->ctx = context_create(ctx, NULL);
 
   return result;
 }

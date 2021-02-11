@@ -10,20 +10,35 @@ Statement *statement_create(StatementType type, void *params) {
 }
 
 
-void *statement_run(Statement *stmt) {
+void *statement_run(Context *ctx, Statement *stmt) {
   switch (stmt->type) {
   case STMT_RETURN:
-    return expression_run((Expression*)(stmt->params));
+    return expression_run(ctx, (Expression*)(stmt->params));
   case STMT_EXPR:
-    expression_run((Expression*)(stmt->params));
+    expression_run(ctx, (Expression*)(stmt->params));
     break;
   case STMT_IF:
-    if (expression_run(((void**)stmt->params)[0]))
+    if (expression_run(ctx, ((void**)stmt->params)[0]))
       return context_run(((void**)stmt->params)[1]);
     break;
-  case STMT_CTX:
-      return context_run((Context*)stmt->params);
+  case STMT_WHILE:
+    while (expression_run(ctx, ((void**)stmt->params)[0])) {
+      void *result = context_run(((void**)stmt->params)[1]);
+      if (result != NULL)
+        return result;
+    }
     break;
+  case STMT_CTX:
+    return context_run((Context*)stmt->params);
+    break;
+  case STMT_VAR_SET: {
+    char *name = ((void**)stmt->params)[0];
+    Expression *value = ((void**)stmt->params)[1];
+    Variable *v = context_variable_get(ctx, name);
+    if (v != NULL)
+      v->value = expression_run(ctx, value);
+    break;
+  }
   }
   return NULL;
 }

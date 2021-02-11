@@ -10,45 +10,60 @@ Expression *expression_create(ExpressionType type, void *params) {
 }
 
 
-void *expression_run(Expression *expr) {
+void *expression_run(Context *ctx, Expression *expr) {
   switch (expr->type) {
   case EXPR_ADD:
     return (void*)(
-      (int)expression_run(((Expression**)expr->params)[0]) +
-      (int)expression_run(((Expression**)expr->params)[1]));
+      (int)expression_run(ctx, ((Expression**)expr->params)[0]) +
+      (int)expression_run(ctx, ((Expression**)expr->params)[1]));
   case EXPR_SUB:
     return (void*)(
-      (int)expression_run(((Expression**)expr->params)[0]) -
-      (int)expression_run(((Expression**)expr->params)[1]));
+      (int)expression_run(ctx, ((Expression**)expr->params)[0]) -
+      (int)expression_run(ctx, ((Expression**)expr->params)[1]));
   case EXPR_MUL:
     return (void*)(
-      (int)expression_run(((Expression**)expr->params)[0]) *
-      (int)expression_run(((Expression**)expr->params)[1]));
+      (int)expression_run(ctx, ((Expression**)expr->params)[0]) *
+      (int)expression_run(ctx, ((Expression**)expr->params)[1]));
   case EXPR_DIV:
     return (void*)(
-      (int)expression_run(((Expression**)expr->params)[0]) /
-      (int)expression_run(((Expression**)expr->params)[1]));
-  case EXPR_INT_LITERAL:
-    return (void*)expr->params;
+      (int)expression_run(ctx, ((Expression**)expr->params)[0]) /
+      (int)expression_run(ctx, ((Expression**)expr->params)[1]));
   case EXPR_EQUALS:
     return (void*)(
-      expression_run(((Expression**)expr->params)[0]) ==
-      expression_run(((Expression**)expr->params)[1]));
+      expression_run(ctx, ((Expression**)expr->params)[0]) ==
+      expression_run(ctx, ((Expression**)expr->params)[1]));
   case EXPR_NOT_EQUALS:
     return (void*)(
-      expression_run(((Expression**)expr->params)[0]) !=
-      expression_run(((Expression**)expr->params)[1]));
+      expression_run(ctx, ((Expression**)expr->params)[0]) !=
+      expression_run(ctx, ((Expression**)expr->params)[1]));
   case EXPR_LT:
     return (void*)(
-      expression_run(((Expression**)expr->params)[0]) <
-      expression_run(((Expression**)expr->params)[1]));
+      expression_run(ctx, ((Expression**)expr->params)[0]) <
+      expression_run(ctx, ((Expression**)expr->params)[1]));
   case EXPR_GT:
     return (void*)(
-      expression_run(((Expression**)expr->params)[0]) >
-      expression_run(((Expression**)expr->params)[1]));
+      expression_run(ctx, ((Expression**)expr->params)[0]) >
+      expression_run(ctx, ((Expression**)expr->params)[1]));
+  case EXPR_AND:
+    return (void*)(
+      expression_run(ctx, ((Expression**)expr->params)[0]) &&
+      expression_run(ctx, ((Expression**)expr->params)[1]));
+  case EXPR_OR:
+    return (void*)(
+      expression_run(ctx, ((Expression**)expr->params)[0]) ||
+      expression_run(ctx, ((Expression**)expr->params)[1]));
   case EXPR_NOT:
     return (void*)(
-      ! expression_run((Expression*)expr->params));
+      ! expression_run(ctx, (Expression*)expr->params));
+  case EXPR_INT_LITERAL:
+    return (void*)expr->params;
+  case EXPR_VAR_GET: {
+    char *name = expr->params;
+    Variable *v = context_variable_get(ctx, name);
+    if (v != NULL)
+      return v->value;
+    break;
+  }
   }
   return NULL;
 }
@@ -67,6 +82,8 @@ void expression_destroy(Expression *expr) {
   case EXPR_NOT_EQUALS:
   case EXPR_LT:
   case EXPR_GT:
+  case EXPR_AND:
+  case EXPR_OR:
     expression_destroy(((Expression**)expr->params)[0]);
     expression_destroy(((Expression**)expr->params)[1]);
     break;
