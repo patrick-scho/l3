@@ -52,8 +52,15 @@ void statement_destroy(Statement *stmt) {
     expression_destroy(((void**)stmt->params)[0]);
     context_destroy(((void**)stmt->params)[1]);
     break;
+  case STMT_WHILE:
+    expression_destroy(((void**)stmt->params)[0]);
+    context_destroy(((void**)stmt->params)[1]);
+    break;
   case STMT_CTX:
     context_destroy((Context*)(stmt->params));
+    break;
+  case STMT_VAR_SET:
+    expression_destroy(((void**)stmt->params)[1]);
     break;
   }
 }
