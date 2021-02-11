@@ -56,28 +56,28 @@ int main(int argc, char **argv) {
       expression_create(EXPR_LT, (void*[]){
         expression_create(EXPR_VAR_GET, "i"),
         expression_create(EXPR_VAR_GET, "n")
+      }),
+      context_create(f1->ctx, (Statement*[]){
+        statement_create(STMT_VAR_SET, (void*[]){
+          "c", expression_create(EXPR_VAR_GET, "a")
+        }),
+        statement_create(STMT_VAR_SET, (void*[]){
+          "a", expression_create(EXPR_VAR_GET, "b")
+        }),
+        statement_create(STMT_VAR_SET, (void*[]){
+          "b", expression_create(EXPR_ADD, (void*[]){
+            expression_create(EXPR_VAR_GET, "b"),
+            expression_create(EXPR_VAR_GET, "c")
+          })
+        }),
+        statement_create(STMT_VAR_SET, (void*[]){
+          "i", expression_create(EXPR_ADD, (void*[]){
+            expression_create(EXPR_VAR_GET, "i"),
+            expression_create(EXPR_INT_LITERAL, 1)
+          })
+        }),
+        NULL
       })
-    }),
-    context_create(f1->ctx, (Statement*[]){
-      statement_create(STMT_VAR_SET, (void*[]){
-        "c", expression_create(EXPR_VAR_GET, "a")
-      }),
-      statement_create(STMT_VAR_SET, (void*[]){
-        "a", expression_create(EXPR_VAR_GET, "b")
-      }),
-      statement_create(STMT_VAR_SET, (void*[]){
-        "b", expression_create(EXPR_ADD, (void*[]){
-          expression_create(EXPR_VAR_GET, "b"),
-          expression_create(EXPR_VAR_GET, "c")
-        })
-      }),
-      statement_create(STMT_VAR_SET, (void*[]){
-        "i", expression_create(EXPR_ADD, (void*[]){
-          expression_create(EXPR_VAR_GET, "i"),
-          expression_create(EXPR_INT_LITERAL, 1)
-        })
-      }),
-      NULL
     })
   );
 
