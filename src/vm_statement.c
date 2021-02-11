@@ -63,4 +63,6 @@ void statement_destroy(Statement *stmt) {
     expression_destroy(((void**)stmt->params)[1]);
     break;
   }
+
+  free(stmt);
 }

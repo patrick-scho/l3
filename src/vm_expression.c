@@ -86,4 +86,6 @@ void expression_destroy(Expression *expr) {
     expression_destroy(((Expression**)expr->params)[1]);
     break;
   }
+  
+  free(expr);
 }
