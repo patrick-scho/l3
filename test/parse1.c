@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <vm/vm.h>
+#include <parse/source.h>
 #include <parse/parse.h>
 
 #define STB_DS_IMPLEMENTATION
@@ -11,7 +12,7 @@ int main(int argc, char **argv) {
 
   Context *ctx = parse_context(source);
 
-  setup_context(ctx);
+  context_set_parents(ctx);
 
   int result = (int)context_run(ctx);
   printf("result: %d\n", result);

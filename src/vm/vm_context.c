@@ -50,7 +50,7 @@ void context_set_parents(Context *ctx) {
     if (stmt->type == STMT_CTX || stmt->type == STMT_IF || stmt->type == STMT_WHILE) {
       Context *c = stmt->param2;
       c->parent = ctx;
-      setup_context(c);
+      context_set_parents(c);
     }
   }
 }

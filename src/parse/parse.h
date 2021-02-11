@@ -7,10 +7,7 @@
 #include <vm/vm.h>
 #include "source.h"
 
-void error(const char *msg) {
-  fprintf(stderr, "%s\n", msg);
-}
-
+void error(const char *msg);
 
 
 bool  parse_is_whitespace(char c);

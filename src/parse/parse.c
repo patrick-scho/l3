@@ -1,6 +1,12 @@
 #include "parse.h"
 
+#include <file/file.h>
+
 #include "source.h"
+
+void error(const char *msg) {
+  fprintf(stderr, "%s\n", msg);
+}
 
 bool parse_is_whitespace(char c) {
   return
