@@ -56,5 +56,6 @@ void context_destroy(Context *ctx) {
     variable_destroy(ctx->variables[i]);
   }
   arrfree(ctx->statements);
+  arrfree(ctx->variables);
   free(ctx);
 }
