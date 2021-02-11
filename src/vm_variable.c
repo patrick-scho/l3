@@ -1,5 +1,3 @@
-#pragma once
-
 #include "vm.h"
 
 Variable *variable_create(const char *name, void *value) {

@@ -1,5 +1,3 @@
-#pragma once
-
 #include "vm.h"
 
 Function *function_create(Context *ctx, const char *name) {

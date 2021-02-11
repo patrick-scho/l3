@@ -1,5 +1,3 @@
-#pragma once
-
 #include "vm.h"
 
 Context *context_create(Context *parent, Statement **stmts) {

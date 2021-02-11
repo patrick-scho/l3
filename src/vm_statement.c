@@ -1,5 +1,3 @@
-#pragma once
-
 #include "vm.h"
 
 Statement *statement_create(StatementType type, void *params) {

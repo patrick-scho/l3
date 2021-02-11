@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
   context_variable_add(f1->ctx, variable_create("a", 0));
   context_variable_add(f1->ctx, variable_create("b", 0));
   context_variable_add(f1->ctx, variable_create("c", 0));
-  context_variable_add(f1->ctx, variable_create("n", 4));
+  context_variable_add(f1->ctx, variable_create("n", 40));
   context_variable_add(f1->ctx, variable_create("i", 3));
 
   context_statement_add(f1->ctx,

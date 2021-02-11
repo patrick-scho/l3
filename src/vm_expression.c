@@ -1,5 +1,3 @@
-#pragma once
-
 #include "vm.h"
 
 Expression *expression_create(ExpressionType type, void *params) {
