@@ -50,7 +50,9 @@ Expression *parse_expression(Source *s) {
     parse_expect(s, ",");
     Expression *exprR = parse_expression(s);
     parse_expect(s, ")");
-    return expression_create(op_to_expr_type(op), exprL, exprR);
+    ExpressionType type = op_to_expr_type(op);
+    free(op);
+    return expression_create(type, exprL, exprR);
   }
   else if (parse_this_is_number(s)) {
     int number = parse_number(s);
