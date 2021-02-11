@@ -1,0 +1,17 @@
+{
+var a = 44
+var b = 12
+
+if ==(a, 0) {
+  return b
+}
+while !(==(b, 0)) {
+  if >(a, b) {
+    a = -(a, b)
+  }
+  if ||(<(a, b), ==(a, b)) {
+    b = -(b, a)
+  }
+}
+return a
+}

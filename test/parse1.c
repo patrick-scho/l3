@@ -8,7 +8,11 @@
 #include <stb_ds.h>
 
 int main(int argc, char **argv) {
-  Source *source = source_create_from_file("test/a.txt");
+  if (argc != 2) {
+    printf("Wrong number of arguments\n");
+    return 1;
+  }
+  Source *source = source_create_from_file(argv[1]);
 
   Context *ctx = parse_context(source);
 
