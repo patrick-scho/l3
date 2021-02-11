@@ -1,40 +1,41 @@
 #include "vm.h"
 
-Statement *statement_create(StatementType type, void *params) {
+Statement *statement_create(StatementType type, void *param1, void *param2) {
   Statement *result = malloc(sizeof *result);
   result->type = type;
-  result->params = params;
+  result->param1 = param1;
+  result->param2 = param2;
   return result;
 }
 
 
-void *statement_run(Context *ctx, Statement *stmt) {
+void *statement_run(Statement *stmt, Context *ctx) {
   switch (stmt->type) {
   case STMT_RETURN:
-    return expression_run(ctx, (Expression*)(stmt->params));
+    return expression_run(stmt->param1, ctx);
   case STMT_EXPR:
-    expression_run(ctx, (Expression*)(stmt->params));
+    expression_run(stmt->param1, ctx);
     break;
   case STMT_IF:
-    if (expression_run(ctx, ((void**)stmt->params)[0]))
-      return context_run(((void**)stmt->params)[1]);
+    if (expression_run(stmt->param1, ctx))
+      return context_run(stmt->param2);
     break;
   case STMT_WHILE:
-    while (expression_run(ctx, ((void**)stmt->params)[0])) {
-      void *result = context_run(((void**)stmt->params)[1]);
+    while (expression_run(stmt->param1, ctx)) {
+      void *result = context_run(stmt->param2);
       if (result != NULL)
         return result;
     }
     break;
   case STMT_CTX:
-    return context_run((Context*)stmt->params);
+    return context_run(stmt->param2);
     break;
   case STMT_VAR_SET: {
-    char *name = ((void**)stmt->params)[0];
-    Expression *value = ((void**)stmt->params)[1];
+    char *name = stmt->param1;
+    Expression *value = stmt->param2;
     Variable *v = context_variable_get(ctx, name);
     if (v != NULL)
-      v->value = expression_run(ctx, value);
+      v->value = expression_run(value, ctx);
     break;
   }
   }
@@ -46,21 +47,19 @@ void statement_destroy(Statement *stmt) {
   switch (stmt->type) {
   case STMT_EXPR:
   case STMT_RETURN:
-    expression_destroy((Expression*)(stmt->params));
+    expression_destroy(stmt->param1);
     break;
   case STMT_IF:
-    expression_destroy(((void**)stmt->params)[0]);
-    context_destroy(((void**)stmt->params)[1]);
-    break;
   case STMT_WHILE:
-    expression_destroy(((void**)stmt->params)[0]);
-    context_destroy(((void**)stmt->params)[1]);
+    expression_destroy(stmt->param1);
+    context_destroy(stmt->param2);
     break;
   case STMT_CTX:
-    context_destroy((Context*)(stmt->params));
+    context_destroy(stmt->param2);
     break;
   case STMT_VAR_SET:
-    expression_destroy(((void**)stmt->params)[1]);
+    free((char*)stmt->param1);
+    expression_destroy(stmt->param2);
     break;
   }
 

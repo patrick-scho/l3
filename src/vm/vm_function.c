@@ -1,10 +1,10 @@
 #include "vm.h"
 
-Function *function_create(Context *ctx, const char *name) {
+Function *function_create(const char *name, Context *ctx) {
   Function *result = malloc(sizeof *result);
 
   result->name = name;
-  result->ctx = context_create(ctx, NULL);
+  result->ctx = ctx;
 
   return result;
 }
@@ -17,5 +17,6 @@ void *function_run(Function *f) {
 
 void function_destroy(Function *f) {
   context_destroy(f->ctx);
+  free(f->name);
   free(f);
 }

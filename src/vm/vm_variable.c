@@ -9,5 +9,6 @@ Variable *variable_create(const char *name, void *value) {
 
 
 void variable_destroy(Variable *var) {
+  free(var->name);
   free(var);
 }
