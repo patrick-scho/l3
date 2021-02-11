@@ -1,6 +1,6 @@
 {
-var a = 44
-var b = 12
+var a = 1071
+var b = 1029
 
 if ==(a, 0) {
   return b
