@@ -40,7 +40,7 @@ void expression_destroy(Expression *expr);
 // Statement
 
 typedef enum {
-  STMT_EXPR, STMT_RETURN, STMT_IF, STMT_WHILE, STMT_CTX, STMT_VAR_SET
+  STMT_EXPR, STMT_RETURN, STMT_IF, STMT_ELSE, STMT_WHILE, STMT_CTX, STMT_VAR_SET
 } StatementType;
 typedef struct {
   StatementType type;
@@ -78,5 +78,6 @@ void context_variable_add(Context *ctx, Variable *var);
 void context_function_add(Context *ctx, Function *fn);
 Variable *context_variable_get(Context *ctx, const char *name);
 void context_set_parents(Context *ctx);
+int context_get_statement_index(Context *ctx, Statement *stmt);
 void *context_run(Context *ctx);
 void context_destroy(Context *ctx);

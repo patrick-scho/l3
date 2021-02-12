@@ -47,12 +47,24 @@ Variable *context_variable_get(Context *ctx, const char *name) {
 void context_set_parents(Context *ctx) {
   for (int i = 0; i < arrlen(ctx->statements); i++) {
     Statement *stmt = ctx->statements[i];
-    if (stmt->type == STMT_CTX || stmt->type == STMT_IF || stmt->type == STMT_WHILE) {
+    if (
+      stmt->type == STMT_CTX ||
+      stmt->type == STMT_IF ||
+      stmt->type == STMT_WHILE ||
+      stmt->type == STMT_ELSE) {
       Context *c = stmt->param2;
       c->parent = ctx;
       context_set_parents(c);
     }
   }
+}
+
+
+int context_get_statement_index(Context *ctx, Statement *stmt) {
+  for (int i = 0; i < arrlen(ctx->statements); i++)
+    if (ctx->statements[i] == stmt)
+      return i;
+  return -1;
 }
 
 

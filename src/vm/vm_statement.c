@@ -19,6 +19,14 @@ void *statement_run(Statement *stmt, Context *ctx) {
   case STMT_IF:
     if (expression_run(stmt->param1, ctx))
       return context_run(stmt->param2);
+    else {
+      int index = context_get_statement_index(ctx, stmt);
+      if (
+        index >= 0 &&
+        index < arrlen(ctx->statements)-1 &&
+        ctx->statements[index+1]->type == STMT_ELSE)
+        context_run(ctx->statements[index+1]->param2);
+    }
     break;
   case STMT_WHILE:
     while (expression_run(stmt->param1, ctx)) {
@@ -55,6 +63,7 @@ void statement_destroy(Statement *stmt) {
     context_destroy(stmt->param2);
     break;
   case STMT_CTX:
+  case STMT_ELSE:
     context_destroy(stmt->param2);
     break;
   case STMT_VAR_SET:

@@ -79,6 +79,11 @@ Statement *parse_statement(Source *s) {
     Context *ctx = parse_context(s);
     return statement_create(STMT_IF, expr, ctx);
   }
+  else if (parse_this_is(s, "else")) {
+    parse_expect(s, "else");
+    Context *ctx = parse_context(s);
+    return statement_create(STMT_ELSE, NULL, ctx);
+  }
   else if (parse_this_is(s, "while")) {
     parse_expect(s, "while");
     Expression *expr = parse_expression(s);
