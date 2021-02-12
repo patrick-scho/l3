@@ -9,10 +9,6 @@ if ||( ==(n, 1), ==(n, 2)) {
   return 1
 }
 
-fn abc() {
-  return +(b, c)
-}
-
 while <(i, n) {
   c = a
   a = b
