@@ -43,6 +43,14 @@ void *expression_run(Expression *expr, Context *ctx) {
     return (void*)(
       expression_run(expr->param1, ctx) >
       expression_run(expr->param2, ctx));
+  case EXPR_LT_EQ:
+    return (void*)(
+      expression_run(expr->param1, ctx) <=
+      expression_run(expr->param2, ctx));
+  case EXPR_GT_EQ:
+    return (void*)(
+      expression_run(expr->param1, ctx) >=
+      expression_run(expr->param2, ctx));
   case EXPR_AND:
     return (void*)(
       expression_run(expr->param1, ctx) &&
@@ -84,6 +92,8 @@ void expression_destroy(Expression *expr) {
   case EXPR_NOT_EQUALS:
   case EXPR_LT:
   case EXPR_GT:
+  case EXPR_LT_EQ:
+  case EXPR_GT_EQ:
   case EXPR_AND:
   case EXPR_OR:
     expression_destroy(expr->param1);

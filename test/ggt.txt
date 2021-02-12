@@ -5,11 +5,11 @@ var b = 1029
 if ==(a, 0) {
   return b
 }
-while !(==(b, 0)) {
+while !=(b, 0) {
   if >(a, b) {
     a = -(a, b)
   }
-  if ||(<(a, b), ==(a, b)) {
+  if <=(a, b) {
     b = -(b, a)
   }
 }

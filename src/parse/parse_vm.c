@@ -12,6 +12,8 @@ ExpressionType op_to_expr_type(const char *op) {
   else if (strcmp(op, "!=") == 0) return EXPR_NOT_EQUALS;
   else if (strcmp(op, "<")  == 0) return EXPR_LT;
   else if (strcmp(op, ">")  == 0) return EXPR_GT;
+  else if (strcmp(op, "<=") == 0) return EXPR_LT_EQ;
+  else if (strcmp(op, ">=") == 0) return EXPR_GT_EQ;
   else if (strcmp(op, "&&") == 0) return EXPR_AND;
   else if (strcmp(op, "||") == 0) return EXPR_OR;
 }
@@ -43,7 +45,7 @@ Expression *parse_expression(Source *s) {
     parse_expect(s, ")");
     return expression_create(EXPR_NOT, expr, NULL);
   }
-  else if (parse_this_is_in(s, (char*[]){ "+", "-", "*", "/", "==", "!=", "<", ">", "&&", "||", NULL })) {
+  else if (parse_this_is_in(s, (char*[]){ "+", "-", "*", "/", "==", "!=", "<", ">", "<=", ">=", "&&", "||", NULL })) {
     char *op = parse_word(s);
     parse_expect(s, "(");
     Expression *exprL = parse_expression(s);

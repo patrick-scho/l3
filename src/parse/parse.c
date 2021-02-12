@@ -59,8 +59,9 @@ bool parse_this_is(Source *s, const char *str) {
     if (source_get_at(s, offset + i) != str[i])
       return false;
       
-  //return parse_is_whitespace(source_get_at(s, offset + len));
-  return true;
+  return
+    (s->index + offset + len >= s->length) ||
+    !parse_is_word_char(source_get_at(s, offset + len));
 }
 
 
@@ -88,8 +89,9 @@ bool parse_next_is(Source *s, const char *str) {
     if (source_get_at(s, offset + i) != str[i])
       return false;
       
-  //return parse_is_whitespace(source_get_at(s, offset + len));
-  return true;
+  return
+    (s->index + offset + len >= s->length) ||
+    !parse_is_word_char(source_get_at(s, offset + len));
 }
 
 
