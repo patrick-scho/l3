@@ -1,7 +1,7 @@
 #include "vm.h"
 
 Expression *expression_create(ExpressionType type, void *param1, void *param2) {
-  Expression *result = malloc(sizeof *result);
+  Expression *result = malloc(sizeof(Expression));
   result->type = type;
   result->param1 = param1;
   result->param2 = param2;

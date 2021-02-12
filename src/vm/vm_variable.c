@@ -1,7 +1,7 @@
 #include "vm.h"
 
 Variable *variable_create(const char *name, void *value) {
-  Variable *result = malloc(sizeof *result);
+  Variable *result = malloc(sizeof(Variable));
   result->name = name;
   result->value = value;
   return result;

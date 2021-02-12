@@ -1,7 +1,7 @@
 #include "vm.h"
 
 Statement *statement_create(StatementType type, void *param1, void *param2) {
-  Statement *result = malloc(sizeof *result);
+  Statement *result = malloc(sizeof(Statement));
   result->type = type;
   result->param1 = param1;
   result->param2 = param2;

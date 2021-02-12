@@ -109,7 +109,7 @@ char *parse_word(Source *s) {
   int length = 0;
   while (parse_is_word_char(source_get_at(s, length)))
     length++;
-  char *result = (char*)malloc((sizeof *result) * length + 1);
+  char *result = (char*)malloc(sizeof(char) * length + 1);
   strncpy(result, s->str + s->index, length);
   result[length] = 0;
   s->index += length;

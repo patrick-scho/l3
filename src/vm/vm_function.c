@@ -1,7 +1,7 @@
 #include "vm.h"
 
 Function *function_create(const char *name, Context *ctx) {
-  Function *result = malloc(sizeof *result);
+  Function *result = malloc(sizeof(Function));
 
   result->name = name;
   result->ctx = ctx;

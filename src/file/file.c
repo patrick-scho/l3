@@ -7,7 +7,7 @@ long file_read(const char *filename, char **buffer) {
   long filesize = ftell(f);
   fseek(f, 0, SEEK_SET);
 
-  *buffer = (char*)malloc((sizeof *buffer) * filesize);
+  *buffer = (char*)malloc(sizeof(char) * filesize);
   long read = fread(*buffer, 1, filesize, f);
 
   if (read != filesize)

@@ -1,7 +1,7 @@
 #include "vm.h"
 
 Context *context_create(Context *parent, Statement **stmts) {
-  Context *result = malloc(sizeof *result);
+  Context *result = malloc(sizeof(Context));
 
   result->parent = parent;
 
