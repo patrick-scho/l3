@@ -25,7 +25,9 @@ Variable *parse_variable(Source *s) {
   parse_expect(s, "var");
   char *name = parse_word(s);
   parse_expect(s, "=");
-  int value = parse_number(s);
+  int value = (int)expression_run(
+    parse_expression(s),
+    NULL);
   return variable_create(name, value);
 }
 
