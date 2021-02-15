@@ -3,6 +3,8 @@
 #include <vm/vm.h>
 #include "source.h"
 
+static const char *operators[] = { "+", "-", "*", "/", "==", "!=", "<", ">", "<=", ">=", "&&", "||", NULL };
+
 ExpressionType op_to_expr_type(const char *op) {
   /**/ if (strcmp(op, "+")  == 0) return EXPR_ADD;
   else if (strcmp(op, "-")  == 0) return EXPR_SUB;
@@ -37,24 +39,17 @@ Function *parse_function(Source *s) {
 }
 
 
-Expression *parse_expression(Source *s) {
-  /**/ if (parse_this_is(s, "!")) {
-    parse_expect(s, "!");
+Expression *parse_subexpression(Source *s) {
+  /**/ if (parse_this_is(s, "(")) {
     parse_expect(s, "(");
     Expression *expr = parse_expression(s);
     parse_expect(s, ")");
-    return expression_create(EXPR_NOT, expr, NULL);
+    return expr;
   }
-  else if (parse_this_is_in(s, (char*[]){ "+", "-", "*", "/", "==", "!=", "<", ">", "<=", ">=", "&&", "||", NULL })) {
-    char *op = parse_word(s);
-    parse_expect(s, "(");
-    Expression *exprL = parse_expression(s);
-    parse_expect(s, ",");
-    Expression *exprR = parse_expression(s);
-    parse_expect(s, ")");
-    ExpressionType type = op_to_expr_type(op);
-    free(op);
-    return expression_create(type, exprL, exprR);
+  else if (parse_this_is(s, "!")) {
+    parse_expect(s, "!");
+    Expression *expr = parse_expression(s);
+    return expression_create(EXPR_NOT, expr, NULL);
   }
   else if (parse_this_is_number(s)) {
     int number = parse_number(s);
@@ -64,6 +59,24 @@ Expression *parse_expression(Source *s) {
     char *name = parse_word(s);
     return expression_create(EXPR_VAR_GET, name, NULL);
   }
+}
+
+
+Expression *parse_expression(Source *s) {
+  Expression *result = parse_subexpression(s);
+
+  while (parse_this_is_in(s, operators)) {
+    char *op = parse_op(s);
+    
+    Expression *exprL = result;
+    Expression *exprR = parse_subexpression(s);
+    
+    ExpressionType type = op_to_expr_type(op);
+    free(op);
+    result = expression_create(type, exprL, exprR);
+  }
+
+  return result;
 }
 
 

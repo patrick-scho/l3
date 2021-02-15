@@ -2,15 +2,15 @@
 var a = 1071
 var b = 1029
 
-if ==(a, 0) {
+if a == 0 {
   return b
 }
-while !=(b, 0) {
-  if >(a, b) {
-    a = -(a, b)
+while b != 0 {
+  if a > b {
+    a = a - b
   }
   else {
-    b = -(b, a)
+    b = b - a
   }
 }
 return a

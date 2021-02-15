@@ -12,6 +12,7 @@ void error(const char *msg);
 
 bool  parse_is_whitespace(char c);
 bool  parse_is_word_char(char c);
+bool  parse_is_op_char(char c);
 void  parse_skip_whitespace(Source *s);
 void  parse_expect(Source *s, const char *str);
 bool  parse_this_is(Source *s, const char *str);
@@ -19,6 +20,7 @@ bool  parse_this_is_number(Source *s);
 bool  parse_next_is(Source *s, const char *str);
 bool  parse_this_is_in(Source *s, const char **strs);
 char *parse_word(Source *s);
+char *parse_op(Source *s);
 int   parse_number(Source *s);
 
 

@@ -8,6 +8,8 @@ void error(const char *msg) {
   fprintf(stderr, "%s\n", msg);
 }
 
+static const char op_chars[] = "+-*/&|!=<>";
+
 bool parse_is_whitespace(char c) {
   return
     c == ' '  ||
@@ -19,12 +21,19 @@ bool parse_is_whitespace(char c) {
 
 bool parse_is_word_char(char c) {
   return
-    !parse_is_whitespace(c) &&
-    c != '(' &&
-    c != ')' &&
-    c != ',' &&
-    c != '{' &&
-    c != '}';
+    (c >= 'a' && c <= 'z') ||
+    (c >= 'A' && c <= 'Z') ||
+    (c >= '0' && c <= '9') ||
+    c == '_';
+}
+
+
+bool parse_is_op_char(char c) {
+  for (int i = 0; i < strlen(op_chars); i++) {
+    if (c == op_chars[i])
+      return true;
+  }
+  return false;
 }
 
 
@@ -59,9 +68,7 @@ bool parse_this_is(Source *s, const char *str) {
     if (source_get_at(s, offset + i) != str[i])
       return false;
       
-  return
-    (s->index + offset + len >= s->length) ||
-    !parse_is_word_char(source_get_at(s, offset + len));
+  return true;
 }
 
 
@@ -89,9 +96,7 @@ bool parse_next_is(Source *s, const char *str) {
     if (source_get_at(s, offset + i) != str[i])
       return false;
       
-  return
-    (s->index + offset + len >= s->length) ||
-    !parse_is_word_char(source_get_at(s, offset + len));
+  return true;
 }
 
 
@@ -108,6 +113,19 @@ char *parse_word(Source *s) {
   parse_skip_whitespace(s);
   int length = 0;
   while (parse_is_word_char(source_get_at(s, length)))
+    length++;
+  char *result = (char*)malloc(sizeof(char) * length + 1);
+  strncpy(result, s->str + s->index, length);
+  result[length] = 0;
+  s->index += length;
+  return result;
+}
+
+
+char *parse_op(Source *s) {
+  parse_skip_whitespace(s);
+  int length = 0;
+  while (parse_is_op_char(source_get_at(s, length)))
     length++;
   char *result = (char*)malloc(sizeof(char) * length + 1);
   strncpy(result, s->str + s->index, length);
