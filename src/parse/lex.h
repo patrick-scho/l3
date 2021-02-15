@@ -10,6 +10,8 @@ const static char *keywords[] = {
   "var", "fn", "if", "while", "return"
 };
 
+const static char ops[] = "+-*/=!<>|";
+
 const static char *TokenTypeNames[] = {
   "TOKEN_NAME", "TOKEN_OPERATOR", "TOKEN_STRING", "TOKEN_NUMBER",
   "TOKEN_PAR_OPEN", "TOKEN_PAR_CLOSE", "TOKEN_BRACE_OPEN", "TOKEN_BRACE_CLOSE",
@@ -63,7 +65,6 @@ bool is_alpha(char c) {
     c == '_';
 }
 bool is_operator(char c) {
-  const char ops[] = "+-*/=!<>|";
   for (int i = 0; i < sizeof(ops); i++)
     if (c == ops[i])
       return true;
@@ -184,9 +185,25 @@ void token_destroy(Token *token) {
 }
 
 
-void token_stream_destroy(Token **tokens) {
-  for (int i = 0; i < arrlen(tokens); i++) {
-    token_destroy(tokens[i]);
+typedef struct {
+  Token **tokens;
+  int index, length;
+} TokenStream;
+
+
+TokenStream *tokenstream_create(Token **tokens) {
+  TokenStream *result = (TokenStream*)malloc(sizeof(TokenStream));
+  result->tokens = tokens;
+  result->index = 0;
+  result->length = arrlen(tokens);
+  return result;
+}
+
+
+void tokenstream_destroy(TokenStream *ts) {
+  for (int i = 0; i < arrlen(ts->tokens); i++) {
+    token_destroy(ts->tokens[i]);
   }
-  arrfree(tokens);
+  arrfree(ts->tokens);
+  free(ts);
 }
