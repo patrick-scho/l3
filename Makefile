@@ -8,14 +8,10 @@ INCLUDES=
 INCLUDES += src
 
 HEADERS=
-HEADERS += $(wildcard src/vm/*.h)
-HEADERS += $(wildcard src/parse/*.h)
-HEADERS += $(wildcard src/file/*.h)
+HEADERS += $(wildcard src/*/*.h)
 
 OBJS=
-OBJS += $(patsubst src/%.c, bin/%.o, $(wildcard src/vm/*.c))
-OBJS += $(patsubst src/%.c, bin/%.o, $(wildcard src/parse/*.c))
-OBJS += $(patsubst src/%.c, bin/%.o, $(wildcard src/file/*.c))
+OBJS += $(patsubst src/%.c, bin/%.o, $(wildcard src/*/*.c))
 
 bin/%.o: src/%.c $(HEADERS)
 	$(CC) -c $< \
@@ -27,3 +23,9 @@ bin/%.exe: test/%.c $(OBJS)
 
 bin/%: test/%.c $(OBJS)
 	$(CC) test/$*.c $(OBJS) -I $(INCLUDES) $(C_ARGS) -o bin/$*
+
+wc:
+	cat src/vm/* | wc -l
+	cat src/parse/* | wc -l
+	cat src/file/* | wc -l
+	cat src/vm/* src/parse/* src/file/* | wc -l
