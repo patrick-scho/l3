@@ -1,34 +1,16 @@
 #include "vm.h"
 
-Context *context_create(Context *parent, Statement **stmts) {
+Context *context_create(Context *parent) {
   Context *result = malloc(sizeof(Context));
 
   result->parent = parent;
 
   result->statements = NULL;
-  if (stmts != NULL)
-    for (int i = 0; stmts[i] != NULL; i++)
-      arrput(result->statements, stmts[i]);
-
   result->variables = NULL;
-
   result->functions = NULL;
+  result->structs = NULL;
 
   return result;
-}
-
-
-void context_statement_add(Context *ctx, Statement *stmt) {
-  arrput(ctx->statements, stmt);
-}
-
-
-void context_variable_add(Context *ctx, Variable *var) {
-  arrput(ctx->variables, var);
-}
-
-void context_function_add(Context *ctx, Function *fn) {
-  arrput(ctx->functions, fn);
 }
 
 
@@ -68,10 +50,10 @@ int context_get_statement_index(Context *ctx, Statement *stmt) {
 }
 
 
-void *context_run(Context *ctx) {
+Value *context_run(Context *ctx) {
   for (int i = 0; i < arrlen(ctx->statements); i++) {
-    void *result = statement_run(ctx->statements[i], ctx);
-    if (result != NULL)
+    Value *result = statement_run(ctx->statements[i], ctx);
+    if (result->type->type != TYPE_NONE)
       return result;
   }
   return NULL;
@@ -85,8 +67,11 @@ void context_destroy(Context *ctx) {
     variable_destroy(ctx->variables[i]);
   for (int i = 0; i < arrlen(ctx->functions); i++)
     function_destroy(ctx->functions[i]);
+  for (int i = 0; i < arrlen(ctx->structs); i++)
+    struct_destroy(ctx->structs[i]);
   arrfree(ctx->statements);
   arrfree(ctx->variables);
   arrfree(ctx->functions);
+  arrfree(ctx->structs);
   free(ctx);
 }

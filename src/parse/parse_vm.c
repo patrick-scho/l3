@@ -123,22 +123,22 @@ Statement *parse_statement(Source *s) {
 
 
 Context *parse_context(Source *s) {
-  Context *result = context_create(NULL, NULL);
+  Context *result = context_create(NULL);
 
   parse_expect(s, "{");
 
   while (! parse_this_is(s, "}")) {
 
     if (parse_this_is(s, "var")) {
-      context_variable_add(result,
+      arrput(result->variables,
         parse_variable(s));
     }
     else if (parse_this_is(s, "fn")) {
-      context_function_add(result,
+      arrput(result->functions,
         parse_function(s));
     }
     else {
-      context_statement_add(result,
+      arrput(result->statements,
         parse_statement(s));
     }
 

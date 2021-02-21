@@ -10,7 +10,7 @@ Function *function_create(const char *name, Context *ctx) {
 }
 
 
-void *function_run(Function *f) {
+Value *function_run(Function *f) {
   return context_run(f->ctx);
 }
 

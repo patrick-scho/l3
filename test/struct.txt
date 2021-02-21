@@ -1,0 +1,28 @@
+{
+
+
+struct A {
+  i1: int
+  i2: int
+}
+
+struct B {
+  a1: A
+  a2: A
+}
+
+var b1 : B
+var i1 : int = 12
+
+b1.a1.i1 = 56
+b1.a2.i2 = 67
+
+if i1 == 12 {
+  return b1.a1.i1
+}
+else {
+  return b1.a2.i2
+}
+
+
+}

@@ -2,14 +2,16 @@
 
 Statement *statement_create(StatementType type, void *param1, void *param2) {
   Statement *result = malloc(sizeof(Statement));
+
   result->type = type;
   result->param1 = param1;
   result->param2 = param2;
+  
   return result;
 }
 
 
-void *statement_run(Statement *stmt, Context *ctx) {
+Value *statement_run(Statement *stmt, Context *ctx) {
   switch (stmt->type) {
   case STMT_RETURN:
     return expression_run(stmt->param1, ctx);
@@ -39,9 +41,8 @@ void *statement_run(Statement *stmt, Context *ctx) {
     return context_run(stmt->param2);
     break;
   case STMT_VAR_SET: {
-    char *name = stmt->param1;
+    Variable *v = stmt->param1;
     Expression *value = stmt->param2;
-    Variable *v = context_variable_get(ctx, name);
     if (v != NULL)
       v->value = expression_run(value, ctx);
     break;
