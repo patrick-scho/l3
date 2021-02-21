@@ -24,3 +24,6 @@ bin/%.o: src/%.c $(HEADERS)
 
 bin/%.exe: test/%.c $(OBJS)
 	$(CC) test/$*.c $(OBJS) -I $(INCLUDES) $(C_ARGS) -o bin/$*.exe
+
+bin/%: test/%.c $(OBJS)
+	$(CC) test/$*.c $(OBJS) -I $(INCLUDES) $(C_ARGS) -o bin/$*
