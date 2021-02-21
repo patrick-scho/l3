@@ -1,9 +1,7 @@
 # L3
 ## LOCs
-loc vm:    758
-
-loc parse: 369
-
-loc file:  23
-
-loc total: 1150
+| vm:    | 758                        |
+| parse: | 369                     |
+| file:  | 23                      |
+| | |
+| total: | 1150 |
