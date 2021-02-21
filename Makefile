@@ -39,4 +39,4 @@ endef
 	
 readme: export msg:=$(msg)
 readme:
-	echo "$${msg}" > README
+	echo "$${msg}" > README.md
