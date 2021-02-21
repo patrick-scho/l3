@@ -29,8 +29,11 @@ define msg
 # L3
 ## LOCs
 loc vm:    $(shell cat src/vm/* | wc -l)
+
 loc parse: $(shell cat src/parse/* | wc -l)
+
 loc file:  $(shell cat src/file/* | wc -l)
+
 loc total: $(shell cat src/vm/* src/parse/* src/file/* | wc -l)
 endef
 
