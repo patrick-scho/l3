@@ -145,22 +145,25 @@ void expression_destroy(Expression *expr) {
   case EXPR_UNARY: {
     ExpressionUnary *e = expr->expr_unary;
     expression_destroy(e->expr1);
+    free(e);
     break;
   }
   case EXPR_BINARY: {
     ExpressionBinary *e = expr->expr_binary;
     expression_destroy(e->expr1);
     expression_destroy(e->expr2);
+    free(e);
     break;
   }
   case EXPR_LITERAL: {
     ExpressionLiteral *e = expr->expr_literal;
-    free(e->value);
+    free(e);
     break;
   }
   case EXPR_VAR_GET: {
     ExpressionVarGet *e = expr->expr_var_get;
     free(e->name);
+    free(e);
     break;
   }
   }

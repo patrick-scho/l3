@@ -46,8 +46,10 @@ int main(int argc, char **argv) {
 
   Value *result = function_run(f1);
 
-  //if (result.type == type_int)
-    printf("result: %d\n", *(s64*)result->value);
+  if (type_match(result->type, &type_builtin_int))
+    printf("result: %ld\n", *(s64*)result->value);
+    
+  value_destroy(result);
 
 cleanup:
   function_destroy(f1);

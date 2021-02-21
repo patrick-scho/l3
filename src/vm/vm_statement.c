@@ -30,9 +30,11 @@ Value *statement_run_if(StatementIf     *stmt, Context *ctx) {
   Value *v = expression_run(stmt->cond, ctx);
   if (type_match(v->type, &type_builtin_bool)) {
     if (*(bool*)v->value) {
+      value_destroy(v);
       return context_run(stmt->ctx);
     }
     else {
+      value_destroy(v);
       int index = context_get_statement_index(ctx, (Statement*)(((StatementType*)stmt)-1));
       if (index < arrlen(ctx->statements) - 1) {
         if (ctx->statements[index + 1]->type == STMT_ELSE) {
@@ -41,6 +43,7 @@ Value *statement_run_if(StatementIf     *stmt, Context *ctx) {
       }
     }
   }
+  value_destroy(v);
   return NULL;
 }
 Value *statement_run_while(StatementWhile *stmt, Context *ctx) {
@@ -92,27 +95,34 @@ void statement_destroy(Statement *stmt) {
   switch (stmt->type) {
   case STMT_EXPR:
     expression_destroy(stmt->stmt_expr->expr);
+    free(stmt->stmt_expr);
     break;
   case STMT_RETURN:
     expression_destroy(stmt->stmt_return->expr);
+    free(stmt->stmt_return);
     break;
   case STMT_IF:
     expression_destroy(stmt->stmt_if->cond);
     context_destroy(stmt->stmt_if->ctx);
+    free(stmt->stmt_if);
     break;
   case STMT_ELSE:
     context_destroy(stmt->stmt_else->ctx);
+    free(stmt->stmt_else);
     break;
   case STMT_WHILE:
     expression_destroy(stmt->stmt_while->cond);
     context_destroy(stmt->stmt_while->ctx);
+    free(stmt->stmt_while);
     break;
   case STMT_CTX:
     context_destroy(stmt->stmt_ctx->ctx);
+    free(stmt->stmt_ctx);
     break;
   case STMT_VAR_SET:
     free(stmt->stmt_var_set->name);
     expression_destroy(stmt->stmt_var_set->expr);
+    free(stmt->stmt_var_set);
     break;
 
   }
