@@ -1,9 +1,10 @@
 #include "vm.h"
 
-Variable *variable_create(const char *name, Value *value) {
+Variable *variable_create(const char *name, Type *type, Value *value) {
   Variable *result = malloc(sizeof(Variable));
 
   result->name = name;
+  result->type = type;
   result->value = value;
   
   return result;
@@ -12,5 +13,6 @@ Variable *variable_create(const char *name, Value *value) {
 
 void variable_destroy(Variable *var) {
   free(var->name);
+  value_destroy(var->value);
   free(var);
 }

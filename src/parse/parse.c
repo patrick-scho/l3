@@ -4,10 +4,6 @@
 
 #include "source.h"
 
-void error(const char *msg) {
-  fprintf(stderr, "%s\n", msg);
-}
-
 static const char op_chars[] = "+-*/&|!=<>";
 
 bool parse_is_whitespace(char c) {

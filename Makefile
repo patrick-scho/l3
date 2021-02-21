@@ -2,7 +2,7 @@
 
 CC=gcc
 
-C_ARGS = -Wall -pedantic
+C_ARGS = -w #-Wall -pedantic
 
 INCLUDES=
 INCLUDES += src

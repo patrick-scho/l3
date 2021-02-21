@@ -2,8 +2,8 @@
 
 #include <stdlib.h>
 
+#include <vm/vm.h>
 #include <file/file.h>
-
 
 typedef struct {
   char *str;

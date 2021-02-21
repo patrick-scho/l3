@@ -29,15 +29,19 @@ Variable *context_variable_get(Context *ctx, const char *name) {
 void context_set_parents(Context *ctx) {
   for (int i = 0; i < arrlen(ctx->statements); i++) {
     Statement *stmt = ctx->statements[i];
-    if (
-      stmt->type == STMT_CTX ||
-      stmt->type == STMT_IF ||
-      stmt->type == STMT_WHILE ||
-      stmt->type == STMT_ELSE) {
-      Context *c = stmt->param2;
-      c->parent = ctx;
-      context_set_parents(c);
+
+    Context *c;
+
+    switch (stmt->type) {
+    case STMT_CTX:   c = ((StatementCtx*)stmt)->ctx; break;
+    case STMT_IF:    c = ((StatementIf*)stmt)->ctx; break;
+    case STMT_WHILE: c = ((StatementWhile*)stmt)->ctx; break;
+    case STMT_ELSE:  c = ((StatementElse*)stmt)->ctx; break;
+    default: continue;
     }
+
+    c->parent = ctx;
+    context_set_parents(c);
   }
 }
 
