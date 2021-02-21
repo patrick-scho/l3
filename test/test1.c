@@ -46,6 +46,14 @@ int main(int argc, char **argv) {
       value_create(type_int, 12)));
 
 
+  // arrput(ctx_if->statements,
+  //   statement_create(STMT_STRUCT_MEMBER_SET,
+  //     "i1",
+  //     expression_create(EXPR_STRUCT_MEMBER_GET,
+  //       expression_create(EXPR_VAR_GET, strdup("b1"), NULL),
+  //       "a1")));
+
+
   Context *ctx_if = context_create(f1->ctx);
   arrput(ctx_if->statements,
     statement_create(STMT_RETURN,
@@ -82,6 +90,9 @@ int main(int argc, char **argv) {
     printf("result: %d\n", (int)result->value);
 
   function_destroy(f1);
+  type_destroy(type_int);
+  type_destroy(type_a);
+  type_destroy(type_b);
 
   return 0;
 }

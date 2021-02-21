@@ -11,7 +11,7 @@ Statement *statement_create(StatementType type, void *param1, void *param2) {
 }
 
 
-Value *statement_run(Statement *stmt, Context *ctx) {
+Value statement_run(Statement *stmt, Context *ctx) {
   switch (stmt->type) {
   case STMT_RETURN:
     return expression_run(stmt->param1, ctx);

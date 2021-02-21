@@ -1,15 +1,15 @@
 #include "vm.h"
 
-Struct *struct_create(char *name) {
-  Struct *result = (Struct*)malloc(sizeof(Struct));
+// Struct *struct_create(char *name) {
+//   Struct *result = (Struct*)malloc(sizeof(Struct));
 
-  result->name = name;
+//   result->name = name;
 
-  return result;
-}
+//   return result;
+// }
 
 
-void struct_destroy(Struct *s) {
-  free(s->name);
-  free(s);
-}
+// void struct_destroy(Struct *s) {
+//   free(s->name);
+//   free(s);
+// }

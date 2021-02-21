@@ -22,12 +22,12 @@ uint type_get_byte_width(Type *type) {
     return sizeof(void*);
   case TYPE_ARRAY:
     return type_get_byte_width(type->array_type) * type->array_length;
-  case TYPE_STRUCT: {
-    uint sum = 0;
-    for (int i = 0; i < shlen(type->type_struct->members); i++)
-      sum += type_get_byte_width(type->type_struct->members[i].value);
-    return sum;
-  }
+  // case TYPE_STRUCT: {
+  //   uint sum = 0;
+  //   for (int i = 0; i < shlen(type->type_struct->members); i++)
+  //     sum += type_get_byte_width(type->type_struct->members[i].value);
+  //   return sum;
+  // }
   }
 }
 

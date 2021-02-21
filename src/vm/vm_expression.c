@@ -1,108 +1,118 @@
 #include "vm.h"
 
-Expression *expression_create(ExpressionType type, void *param1, void *param2) {
-  Expression *result = malloc(sizeof(Expression));
-
-  result->type = type;
-  result->param1 = param1;
-  result->param2 = param2;
-  
-  return result;
+#define EXPRESSION_CREATE(NAME, Name, name, args, assign)                               \
+Expression##Name *expression_create##name##args {                                 \
+  Expression##Name *result = (Expression##Name*)malloc(sizeof(Expression##Name)); \
+  result->base = (Expression*)malloc(sizeof(Expression));                         \
+  result->base->type = EXPR_##NAME;                                               \
+  assign                                                                          \
+  return result;                                                                  \
 }
 
+#define EXPRESSION_CREATE0(NAME, Name, name) \
+EXPRESSION_CREATE(NAME, Name, name, (),)
+#define EXPRESSION_CREATE1(NAME, Name, name, type1, arg1) \
+EXPRESSION_CREATE(NAME, Name, name, (type1 arg1), result->arg1 = arg1;)
+#define EXPRESSION_CREATE2(NAME, Name, name, type1, arg1, type2, arg2) \
+EXPRESSION_CREATE(NAME, Name, name, (type1 arg1, type2 arg2), result->arg1 = arg1; result->arg2 = arg2;)
 
-Value *expression_run(Expression *expr, Context *ctx) {
-  switch (expr->type) {
-  case EXPR_ADD:
-    return (void*)(
-      (int)expression_run(expr->param1, ctx) +
-      (int)expression_run(expr->param2, ctx));
-  case EXPR_SUB:
-    return (void*)(
-      (int)expression_run(expr->param1, ctx) -
-      (int)expression_run(expr->param2, ctx));
-  case EXPR_MUL:
-    return (void*)(
-      (int)expression_run(expr->param1, ctx) *
-      (int)expression_run(expr->param2, ctx));
-  case EXPR_DIV:
-    return (void*)(
-      (int)expression_run(expr->param1, ctx) /
-      (int)expression_run(expr->param2, ctx));
-  case EXPR_EQUALS:
-    return (void*)(
-      expression_run(expr->param1, ctx) ==
-      expression_run(expr->param2, ctx));
-  case EXPR_NOT_EQUALS:
-    return (void*)(
-      expression_run(expr->param1, ctx) !=
-      expression_run(expr->param2, ctx));
-  case EXPR_LT:
-    return (void*)(
-      expression_run(expr->param1, ctx) <
-      expression_run(expr->param2, ctx));
-  case EXPR_GT:
-    return (void*)(
-      expression_run(expr->param1, ctx) >
-      expression_run(expr->param2, ctx));
-  case EXPR_LT_EQ:
-    return (void*)(
-      expression_run(expr->param1, ctx) <=
-      expression_run(expr->param2, ctx));
-  case EXPR_GT_EQ:
-    return (void*)(
-      expression_run(expr->param1, ctx) >=
-      expression_run(expr->param2, ctx));
-  case EXPR_AND:
-    return (void*)(
-      expression_run(expr->param1, ctx) &&
-      expression_run(expr->param2, ctx));
-  case EXPR_OR:
-    return (void*)(
-      expression_run(expr->param1, ctx) ||
-      expression_run(expr->param2, ctx));
-  case EXPR_NOT:
-    return (void*)(
-      ! expression_run(expr->param1, ctx));
-  case EXPR_INT_LITERAL:
-    return (void*)expr->param1;
-  case EXPR_VAR_GET: {
-    char *name = expr->param1;
-    Variable *v = context_variable_get(ctx, name);
-    if (v != NULL)
-      return v->value;
-    // return v
-    break;
-  }
-  }
-  return NULL;
+EXPRESSION_CREATE2(ADD,     Add,    _add,     Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE2(SUB,     Sub,    _sub,     Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE2(MUL,     Mul,    _mul,     Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE2(DIV,     Div,    _div,     Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE2(EQ,      Eq,     _eq,      Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE2(NOT_EQ,  NotEq,  _not_eq,  Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE2(LT,      Lt,     _lt,      Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE2(GT,      Gt,     _gt,      Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE2(LT_EQ,   LtEq,   _lt_eq,   Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE2(GT_EQ,   GtEq,   _gt_eq,   Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE1(NOT,     Not,    _not,     Expression *, expr1)
+EXPRESSION_CREATE2(OR,      Or,     _or,      Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE2(AND,     And,    _and,     Expression *, expr1, Expression *, expr2)
+EXPRESSION_CREATE1(INT_LIT, IntLit, _int_lit, long long, ll)
+EXPRESSION_CREATE1(VAR_GET, VarGet, _var_get, char *, name)
+
+
+#define EXPRESSION_CALL(name, expr, ...) \
+switch (expr->type) {                    \
+case EXPR_ADD:     expression_##name##_add    ((ExpressionAdd*)   expr, __VA_ARGS__); break; \
+case EXPR_SUB:     expression_##name##_sub    ((ExpressionSub*)   expr, __VA_ARGS__); break; \
+case EXPR_MUL:     expression_##name##_mul    ((ExpressionMul*)   expr, __VA_ARGS__); break; \
+case EXPR_DIV:     expression_##name##_div    ((ExpressionDiv*)   expr, __VA_ARGS__); break; \
+case EXPR_EQ:      expression_##name##_eq     ((ExpressionEq*)    expr, __VA_ARGS__); break; \
+case EXPR_NOT_EQ:  expression_##name##_not_eq ((ExpressionNotEq*) expr, __VA_ARGS__); break; \
+case EXPR_LT:      expression_##name##_lt     ((ExpressionLt*)    expr, __VA_ARGS__); break; \
+case EXPR_GT:      expression_##name##_gt     ((ExpressionGt*)    expr, __VA_ARGS__); break; \
+case EXPR_LT_EQ:   expression_##name##_lt_eq  ((ExpressionLtEq*)  expr, __VA_ARGS__); break; \
+case EXPR_GT_EQ:   expression_##name##_gt_eq  ((ExpressionGtEq*)  expr, __VA_ARGS__); break; \
+case EXPR_NOT:     expression_##name##_not    ((ExpressionNot*)   expr, __VA_ARGS__); break; \
+case EXPR_OR:      expression_##name##_or     ((ExpressionOr*)    expr, __VA_ARGS__); break; \
+case EXPR_AND:     expression_##name##_and    ((ExpressionAnd*)   expr, __VA_ARGS__); break; \
+case EXPR_INT_LIT: expression_##name##_int_lit((ExpressionIntLit*)expr, __VA_ARGS__); break; \
+case EXPR_VAR_GET: expression_##name##_var_get((ExpressionVarGet*)expr, __VA_ARGS__); break; \
 }
 
+void expression_destroy_add    (ExpressionAdd*    expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_sub    (ExpressionSub*    expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_mul    (ExpressionMul*    expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_div    (ExpressionDiv*    expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_eq     (ExpressionEq*     expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_not_eq (ExpressionNotEq*  expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_lt     (ExpressionLt*     expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_gt     (ExpressionGt*     expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_lt_eq  (ExpressionLtEq*   expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_gt_eq  (ExpressionGtEq*   expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_not    (ExpressionNot*    expr) {
+  expression_destroy(expr->expr1);
+}
+void expression_destroy_or     (ExpressionOr*     expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_and    (ExpressionAnd*    expr) {
+  expression_destroy(expr->expr1);
+  expression_destroy(expr->expr2);
+}
+void expression_destroy_int_lit(ExpressionIntLit* expr) {
+}
+void expression_destroy_var_get(ExpressionVarGet* expr) {
+}
+
+Value expression_run(Expression *expr, Context *ctx) {
+  EXPRESSION_CALL(run, expr, ctx)
+}
 
 void expression_destroy(Expression *expr) {
-  switch (expr->type) {
-  case EXPR_NOT:
-    expression_destroy((Expression*)expr->param1);
-    break;
-  case EXPR_VAR_GET:
-    free((char*)expr->param1);
-    break;
-  case EXPR_ADD:
-  case EXPR_SUB:
-  case EXPR_MUL:
-  case EXPR_DIV:
-  case EXPR_EQUALS:
-  case EXPR_NOT_EQUALS:
-  case EXPR_LT:
-  case EXPR_GT:
-  case EXPR_LT_EQ:
-  case EXPR_GT_EQ:
-  case EXPR_AND:
-  case EXPR_OR:
-    expression_destroy(expr->param1);
-    expression_destroy(expr->param2);
-    break;
-  }
-  
+  EXPRESSION_CALL(destroy, expr)
   free(expr);
 }

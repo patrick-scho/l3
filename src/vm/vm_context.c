@@ -8,7 +8,7 @@ Context *context_create(Context *parent) {
   result->statements = NULL;
   result->variables = NULL;
   result->functions = NULL;
-  result->structs = NULL;
+  // result->structs = NULL;
 
   return result;
 }
@@ -67,11 +67,11 @@ void context_destroy(Context *ctx) {
     variable_destroy(ctx->variables[i]);
   for (int i = 0; i < arrlen(ctx->functions); i++)
     function_destroy(ctx->functions[i]);
-  for (int i = 0; i < arrlen(ctx->structs); i++)
-    struct_destroy(ctx->structs[i]);
+  // for (int i = 0; i < arrlen(ctx->structs); i++)
+  //   struct_destroy(ctx->structs[i]);
   arrfree(ctx->statements);
   arrfree(ctx->variables);
   arrfree(ctx->functions);
-  arrfree(ctx->structs);
+  // arrfree(ctx->structs);
   free(ctx);
 }
