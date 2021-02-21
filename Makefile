@@ -24,8 +24,19 @@ bin/%.exe: test/%.c $(OBJS)
 bin/%: test/%.c $(OBJS)
 	$(CC) test/$*.c $(OBJS) -I $(INCLUDES) $(C_ARGS) -o bin/$*
 
-wc:
-	cat src/vm/* | wc -l
-	cat src/parse/* | wc -l
-	cat src/file/* | wc -l
-	cat src/vm/* src/parse/* src/file/* | wc -l
+
+define msg
+# L3
+## LOCs
+loc vm:    $(shell cat src/vm/* | wc -l)
+loc parse: $(shell cat src/parse/* | wc -l)
+loc file:  $(shell cat src/file/* | wc -l)
+loc total: $(shell cat src/vm/* src/parse/* src/file/* | wc -l)
+endef
+
+.PHONY: readme
+.SILENT: readme
+	
+readme: export msg:=$(msg)
+readme:
+	echo "$${msg}" > README
