@@ -28,6 +28,8 @@ bin/%: test/%.c $(OBJS)
 define msg
 # L3
 ## LOCs
+|     |     |
+| --- | --- |
 | vm:    | $(shell cat src/vm/* | wc -l)                        |
 | parse: | $(shell cat src/parse/* | wc -l)                     |
 | file:  | $(shell cat src/file/* | wc -l)                      |
