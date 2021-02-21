@@ -14,7 +14,7 @@ Context *context_create(Context *parent) {
 }
 
 
-Variable *context_variable_get(Context *ctx, const char *name) {
+Variable *context_variable_get(Context *ctx, char *name) {
   for (int i = 0; i < arrlen(ctx->variables); i++) {
     Variable *v = ctx->variables[i];
     if (strcmp(v->name, name) == 0)
@@ -57,7 +57,7 @@ int context_get_statement_index(Context *ctx, Statement *stmt) {
 Value *context_run(Context *ctx) {
   for (int i = 0; i < arrlen(ctx->statements); i++) {
     Value *result = statement_run(ctx->statements[i], ctx);
-    if (result->type->type != TYPE_NONE)
+    if (result != NULL)
       return result;
   }
   return NULL;

@@ -1,42 +1,38 @@
 #include "vm.h"
 
-ExpressionUnary *expression_create_unary(ExpressionUnaryType type, Expression *expr1) {
-  ExpressionUnary *result = (ExpressionUnary*)malloc(sizeof(ExpressionUnary));
-
-  result->base = (Expression*)malloc(sizeof(Expression));
-  result->base->type = EXPR_UNARY;
-  result->type = type;
-  result->expr1 = expr1;
-
-  return result;
-}
-ExpressionBinary *expression_create_binary(ExpressionBinaryType type, Expression *expr1, Expression *expr2) {
-  ExpressionBinary *result = (ExpressionBinary*)malloc(sizeof(ExpressionBinary));
-
-  result->base = (Expression*)malloc(sizeof(Expression));
-  result->base->type = EXPR_BINARY;
-  result->type = type;
-  result->expr1 = expr1;
-  result->expr2 = expr2;
+Expression *expression_create_unary(ExpressionUnaryType type, Expression *expr1) {
+  Expression *result = (Expression*)malloc(sizeof(Expression));
+  result->type = EXPR_UNARY;
+  result->expr_unary = (ExpressionUnary*)malloc(sizeof(ExpressionUnary));
+  result->expr_unary->type = type;
+  result->expr_unary->expr1 = expr1;
 
   return result;
 }
-ExpressionLiteral *expression_create_literal(ExpressionLiteralType type, void *value) {
-  ExpressionLiteral *result = (ExpressionLiteral*)malloc(sizeof(ExpressionLiteral));
-
-  result->base = (Expression*)malloc(sizeof(Expression));
-  result->base->type = EXPR_LITERAL;
-  result->type = type;
-  result->value = value;
+Expression *expression_create_binary(ExpressionBinaryType type, Expression *expr1, Expression *expr2) {
+  Expression *result = (Expression*)malloc(sizeof(Expression));
+  result->type = EXPR_BINARY;
+  result->expr_binary = (ExpressionBinary*)malloc(sizeof(ExpressionBinary));
+  result->expr_binary->type = type;
+  result->expr_binary->expr1 = expr1;
+  result->expr_binary->expr2 = expr2;
 
   return result;
 }
-ExpressionVarGet *expression_create_var_get(char *name) {
-  ExpressionVarGet *result = (ExpressionVarGet*)malloc(sizeof(ExpressionVarGet));
+Expression *expression_create_literal(ExpressionLiteralType type, void *value) {
+  Expression *result = (Expression*)malloc(sizeof(Expression));
+  result->type = EXPR_LITERAL;
+  result->expr_literal = (ExpressionLiteral*)malloc(sizeof(ExpressionLiteral));
+  result->expr_literal->type = type;
+  result->expr_literal->value = value;
 
-  result->base = (Expression*)malloc(sizeof(Expression));
-  result->base->type = EXPR_VAR_GET;
-  result->name = name;
+  return result;
+}
+Expression *expression_create_var_get(char *name) {
+  Expression *result = (Expression*)malloc(sizeof(Expression));
+  result->type = EXPR_VAR_GET;
+  result->expr_var_get = (ExpressionVarGet*)malloc(sizeof(ExpressionVarGet));
+  result->expr_var_get->name = name;
 
   return result;
 }
@@ -51,7 +47,7 @@ Value *expression_run_unary(ExpressionUnary *expr, Context *ctx) {
     bool *v = (bool*)val->value;
 
     switch (expr->type) {
-    case EXPR_UNARY_NOT: result = value_create(&type_builtin_bool, !(*v)); break;
+    case EXPR_UNARY_NOT: result = value_create(&type_builtin_bool, alloc_bool(!(*(bool*)v))); break;
     }
   }
   else {
@@ -125,16 +121,19 @@ Value *expression_run_var_get(ExpressionVarGet *expr, Context *ctx) {
   if (var == NULL)
     error("unknown variable");
 
-  return var->value;
+  void *buffer = type_alloc(var->type);
+  memcpy(buffer, var->value->value, var->type->byte_width);
+
+  return value_create(var->value->type, buffer);
 }
 
 
 Value *expression_run(Expression *expr, Context *ctx) {
   switch (expr->type) {
-  case EXPR_UNARY:   return expression_run_unary(expr, ctx);
-  case EXPR_BINARY:  return expression_run_binary(expr, ctx);
-  case EXPR_LITERAL: return expression_run_literal(expr, ctx);
-  case EXPR_VAR_GET: return expression_run_var_get(expr, ctx);
+  case EXPR_UNARY:   return expression_run_unary(expr->expr_unary, ctx);
+  case EXPR_BINARY:  return expression_run_binary(expr->expr_binary, ctx);
+  case EXPR_LITERAL: return expression_run_literal(expr->expr_literal, ctx);
+  case EXPR_VAR_GET: return expression_run_var_get(expr->expr_var_get, ctx);
   }
   return NULL;
 }
@@ -144,23 +143,23 @@ Value *expression_run(Expression *expr, Context *ctx) {
 void expression_destroy(Expression *expr) {
   switch (expr->type) {
   case EXPR_UNARY: {
-    ExpressionUnary *e = expr;
+    ExpressionUnary *e = expr->expr_unary;
     expression_destroy(e->expr1);
     break;
   }
   case EXPR_BINARY: {
-    ExpressionBinary *e = expr;
+    ExpressionBinary *e = expr->expr_binary;
     expression_destroy(e->expr1);
     expression_destroy(e->expr2);
     break;
   }
   case EXPR_LITERAL: {
-    ExpressionLiteral *e = expr;
+    ExpressionLiteral *e = expr->expr_literal;
     free(e->value);
     break;
   }
   case EXPR_VAR_GET: {
-    ExpressionVarGet *e = expr;
+    ExpressionVarGet *e = expr->expr_var_get;
     free(e->name);
     break;
   }
