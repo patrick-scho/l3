@@ -1,12 +1,9 @@
 #include "parse.h"
 
+#include <vm/vm.h>
 #include <file/file.h>
 
 #include "source.h"
-
-void error(const char *msg) {
-  fprintf(stderr, "%s\n", msg);
-}
 
 static const char op_chars[] = "+-*/&|!=<>";
 
@@ -29,7 +26,7 @@ bool parse_is_word_char(char c) {
 
 
 bool parse_is_op_char(char c) {
-  for (int i = 0; i < strlen(op_chars); i++) {
+  for (size_t i = 0; i < strlen(op_chars); i++) {
     if (c == op_chars[i])
       return true;
   }

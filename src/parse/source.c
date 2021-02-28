@@ -1,5 +1,7 @@
 #include "source.h"
 
+#include <vm/vm.h>
+
 Source *source_create_from_file(const char *filename) {
   Source *result = (Source*)malloc(sizeof(Source));
   result->length = file_read(filename, &(result->str));

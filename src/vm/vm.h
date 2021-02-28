@@ -1,10 +1,22 @@
 #pragma once
 
+#include <stdio.h>
 #include <stdbool.h>
+#include <setjmp.h>
 
 #include <stb_ds.h>
 
 typedef unsigned int uint;
+
+
+
+static jmp_buf error_jmp_buf;
+static void error(const char *msg) {
+  fprintf(stderr, "Error: %s\n", msg);
+  longjmp(error_jmp_buf, 1);
+}
+
+
 
 // Forward Declarations
 
@@ -15,16 +27,15 @@ typedef struct Type Type;
 
 // Struct
 
-typedef struct Struct {
-  char *name;
-  struct {
-    char *key;
-    Type *value;
-  } *members;
-} Struct;
+// typedef struct Struct {
+//   char *name;
+//   struct {
+//     char *key;
+//     Type *value;
+//   } *members;
+// } Struct;
 
-Struct *struct_create(char *name);
-void struct_destroy(Struct *s);
+// void struct_free(Struct *s);
 
 // Type
 
@@ -41,13 +52,11 @@ typedef struct Type {
   Type *array_type;
   uint array_length;
 
-  Struct *type_struct;
+  //Struct *type_struct;
 } Type;
 
-Type *type_create(TypeType type);
 void *type_alloc(Type *type);
 uint type_get_byte_width(Type *type);
-void type_destroy(Type *type);
 
 // Value
 
@@ -56,9 +65,6 @@ typedef struct {
   void *value;
 } Value;
 
-Value *value_create(Type *type, void *value);
-void value_destroy(Value *value);
-
 // Variable
 
 typedef struct {
@@ -66,16 +72,13 @@ typedef struct {
   Value *value;
 } Variable;
 
-Variable *variable_create(const char *name, Value *value);
-void variable_destroy(Variable *var);
-
 // Expression
 
 typedef enum {
   EXPR_ADD, EXPR_SUB, EXPR_MUL, EXPR_DIV,
   EXPR_EQUALS, EXPR_NOT_EQUALS, EXPR_LT, EXPR_GT, EXPR_LT_EQ, EXPR_GT_EQ,
   EXPR_NOT, EXPR_OR, EXPR_AND,
-  EXPR_INT_LITERAL, EXPR_VAR_GET, EXPR_STRUCT_MEMBER_GET
+  EXPR_LITERAL, EXPR_VAR_GET, EXPR_STRUCT_MEMBER_GET
 } ExpressionType;
 typedef struct {
   ExpressionType type;
@@ -83,9 +86,7 @@ typedef struct {
   void *param2;
 } Expression;
 
-Expression *expression_create(ExpressionType type, void *param1, void *param2);
 Value *expression_run(Expression *expr, Context *ctx);
-void expression_destroy(Expression *expr);
 
 // Statement
 
@@ -99,9 +100,7 @@ typedef struct {
   void *param2;
 } Statement;
 
-Statement *statement_create(StatementType type, void *param1, void *param2);
 Value *statement_run(Statement *stmt, Context *ctx);
-void statement_destroy(Statement *stmt);
 
 // Function
 
@@ -110,10 +109,6 @@ typedef struct {
   Context *ctx;
 } Function;
 
-Function *function_create(const char *name, Context *ctx);
-Value *function_run(Function *f);
-void function_destroy(Function *f);
-
 // Context
 
 typedef struct Context {
@@ -121,12 +116,11 @@ typedef struct Context {
   Variable **variables;
   Statement **statements;
   Function **functions;
-  Struct **structs;
+  //Struct **structs;
 } Context;
 
-Context *context_create(Context *parent);
 Variable *context_variable_get(Context *ctx, const char *name);
 void context_set_parents(Context *ctx);
 int context_get_statement_index(Context *ctx, Statement *stmt);
 Value *context_run(Context *ctx);
-void context_destroy(Context *ctx);
+void context_free(Context *ctx);

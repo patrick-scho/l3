@@ -1,17 +1,5 @@
 #include "vm.h"
 
-Context *context_create(Context *parent) {
-  Context *result = malloc(sizeof(Context));
-
-  result->parent = parent;
-
-  result->statements = NULL;
-  result->variables = NULL;
-  result->functions = NULL;
-  result->structs = NULL;
-
-  return result;
-}
 
 
 Variable *context_variable_get(Context *ctx, const char *name) {
@@ -53,25 +41,16 @@ int context_get_statement_index(Context *ctx, Statement *stmt) {
 Value *context_run(Context *ctx) {
   for (int i = 0; i < arrlen(ctx->statements); i++) {
     Value *result = statement_run(ctx->statements[i], ctx);
-    if (result->type->type != TYPE_NONE)
+    if (result != NULL)
       return result;
   }
   return NULL;
 }
 
 
-void context_destroy(Context *ctx) {
-  for (int i = 0; i < arrlen(ctx->statements); i++)
-    statement_destroy(ctx->statements[i]);
-  for (int i = 0; i < arrlen(ctx->variables); i++)
-    variable_destroy(ctx->variables[i]);
-  for (int i = 0; i < arrlen(ctx->functions); i++)
-    function_destroy(ctx->functions[i]);
-  for (int i = 0; i < arrlen(ctx->structs); i++)
-    struct_destroy(ctx->structs[i]);
+void context_free(Context *ctx) {
   arrfree(ctx->statements);
   arrfree(ctx->variables);
   arrfree(ctx->functions);
-  arrfree(ctx->structs);
-  free(ctx);
+  //arrfree(ctx->structs);
 }

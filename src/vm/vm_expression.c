@@ -1,15 +1,5 @@
 #include "vm.h"
 
-Expression *expression_create(ExpressionType type, void *param1, void *param2) {
-  Expression *result = malloc(sizeof(Expression));
-
-  result->type = type;
-  result->param1 = param1;
-  result->param2 = param2;
-  
-  return result;
-}
-
 
 Value *expression_run(Expression *expr, Context *ctx) {
   switch (expr->type) {
@@ -64,8 +54,8 @@ Value *expression_run(Expression *expr, Context *ctx) {
   case EXPR_NOT:
     return (void*)(
       ! expression_run(expr->param1, ctx));
-  case EXPR_INT_LITERAL:
-    return (void*)expr->param1;
+  case EXPR_LITERAL:
+    return (Value*)expr->param1;
   case EXPR_VAR_GET: {
     char *name = expr->param1;
     Variable *v = context_variable_get(ctx, name);
@@ -73,36 +63,10 @@ Value *expression_run(Expression *expr, Context *ctx) {
       return v->value;
     // return v
     break;
+  case EXPR_STRUCT_MEMBER_GET:
+    break;
   }
   }
   return NULL;
 }
 
-
-void expression_destroy(Expression *expr) {
-  switch (expr->type) {
-  case EXPR_NOT:
-    expression_destroy((Expression*)expr->param1);
-    break;
-  case EXPR_VAR_GET:
-    free((char*)expr->param1);
-    break;
-  case EXPR_ADD:
-  case EXPR_SUB:
-  case EXPR_MUL:
-  case EXPR_DIV:
-  case EXPR_EQUALS:
-  case EXPR_NOT_EQUALS:
-  case EXPR_LT:
-  case EXPR_GT:
-  case EXPR_LT_EQ:
-  case EXPR_GT_EQ:
-  case EXPR_AND:
-  case EXPR_OR:
-    expression_destroy(expr->param1);
-    expression_destroy(expr->param2);
-    break;
-  }
-  
-  free(expr);
-}
