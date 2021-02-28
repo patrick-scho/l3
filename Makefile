@@ -24,21 +24,25 @@ OBJS_WIN += $(patsubst src/%.c, bin/win/%.o, $(wildcard src/*/*.c))
 OBJS_LINUX=
 OBJS_LINUX += $(patsubst src/%.c, bin/linux/%.o, $(wildcard src/*/*.c))
 
+.PRECIOUS: $(OBJS_WIN) $(OBJS_LINUX)
+
 bin/win/%.o: src/%.c $(HEADERS)
-	mkdir -p $(patsubst src/%, bin/win/%, $(wildcard src/*/))
+	mkdir -p $(@D)
 	$(CC) -c $< \
 	      -o $(patsubst src/%.c,bin/win/%.o,$<) \
 				-I $(INCLUDES) $(C_ARGS)
 bin/linux/%.o: src/%.c $(HEADERS)
-	mkdir -p $(patsubst src/%, bin/linux/%, $(wildcard src/*/))
+	mkdir -p $(@D)
 	$(CC) -c $< \
 	      -o $(patsubst src/%.c,bin/linux/%.o,$<) \
 				-I $(INCLUDES) $(C_ARGS)
 
 bin/%.exe: test/%.c $(OBJS_WIN)
+	mkdir -p $(@D)
 	$(CC) test/$*.c $(OBJS_WIN) -I $(INCLUDES) $(C_ARGS) -o bin/$*.exe
 
 bin/%: test/%.c $(OBJS_LINUX)
+	mkdir -p $(@D)
 	$(CC) test/$*.c $(OBJS_LINUX) -I $(INCLUDES) $(C_ARGS) -o bin/$*
 
 
