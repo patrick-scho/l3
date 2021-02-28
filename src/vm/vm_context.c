@@ -19,10 +19,15 @@ void context_set_parents(Context *ctx) {
     Statement *stmt = ctx->statements[i];
     if (
       stmt->type == STMT_CTX ||
-      stmt->type == STMT_IF ||
-      stmt->type == STMT_WHILE ||
       stmt->type == STMT_ELSE) {
-      Context *c = stmt->param2;
+      Context *c = stmt->ctx.ctx;
+      c->parent = ctx;
+      context_set_parents(c);
+    }
+    if (
+      stmt->type == STMT_IF ||
+      stmt->type == STMT_WHILE) {
+      Context *c = stmt->expr_ctx.ctx;
       c->parent = ctx;
       context_set_parents(c);
     }

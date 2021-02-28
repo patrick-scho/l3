@@ -49,6 +49,5 @@ bin/%: test/%.c $(OBJS_LINUX)
 
 loc:
 	echo "vm:    $(shell cat src/vm/* | wc -l)"
-	echo "parse: $(shell cat src/parse/* | wc -l)"
-	echo "file:  $(shell cat src/file/* | wc -l)"
-	echo "total: $(shell cat src/vm/* src/parse/* src/file/* | wc -l)"
+	echo "util:  $(shell cat src/util/* | wc -l)"
+	echo "total: $(shell cat src/vm/* src/util/* | wc -l)"

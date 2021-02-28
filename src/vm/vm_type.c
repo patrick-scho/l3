@@ -27,3 +27,11 @@ uint type_get_byte_width(Type *type) {
   return 0;
 }
 
+
+bool type_match(Type *type1, Type *type2) {
+  return (
+    (type1->type == type2->type) &&
+    (strcmp(type1->name, type2->name) == 0)
+  );
+}
+
