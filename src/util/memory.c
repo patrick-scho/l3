@@ -5,7 +5,7 @@
 #include "stb_ds.h"
 
 
-void *mem_alloc_cb_(size_t size, void *parent, void (*cb)(void*), void *value) {
+void *mem_alloc_(size_t size, void *parent, void (*cb)(void*), void *value) {
   void *ptr = malloc(sizeof(Memory) + size);
   Memory *mem = (Memory*)ptr;
   ptr = (Memory*)ptr + 1;

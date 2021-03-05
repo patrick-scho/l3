@@ -18,7 +18,14 @@ Value *expression_run(Expression *expr, Context *ctx) {
     if (v != NULL)
       return v->value;
     break;
+  }
   case EXPR_STRUCT_MEMBER_GET:
+    break;
+  case EXPR_FUNC_CALL: {
+    Function *f = context_function_get(ctx, expr->func_call.name);
+    if (f != NULL) {
+      return function_run(f, expr->func_call.params);
+    }
     break;
   }
   }

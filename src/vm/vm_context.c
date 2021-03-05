@@ -1,5 +1,6 @@
 #include "vm.h"
 
+#include "util/memory.h"
 
 
 Variable *context_variable_get(Context *ctx, const char *name) {
@@ -10,6 +11,31 @@ Variable *context_variable_get(Context *ctx, const char *name) {
   }
   if (ctx->parent != NULL)
     return context_variable_get(ctx->parent, name);
+  return NULL;
+}
+
+void context_variable_set(Context *ctx, char *name, Value *value) {
+  Variable *var = context_variable_get(ctx, name);
+  if (var == NULL) {
+    Variable *new_var = mem_init(Variable, ctx,
+      .name = name,
+      .value = value_copy(value));
+    arrput(ctx->variables, new_var);
+  }
+  else {
+    value_set(var->value, value);
+  }
+}
+
+
+Function *context_function_get(Context *ctx, const char *name) {
+  for (int i = 0; i < arrlen(ctx->functions); i++) {
+    Function *f = ctx->functions[i];
+    if (strcmp(f->name, name) == 0)
+      return f;
+  }
+  if (ctx->parent != NULL)
+    return context_function_get(ctx->parent, name);
   return NULL;
 }
 

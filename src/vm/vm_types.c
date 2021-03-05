@@ -1,6 +1,8 @@
 #include "vm_types.h"
 
-Type type_int, type_bool;
+// INT
+
+Type type_int;
 
 
 #define INT_BINARY_OP(name, return_type, op) Value *type_int_##name(Value *v1, Value *v2) { return mem_init(Value, v1, .type = &return_type, .value = (int)v1->value op (int)v2->value); }
@@ -16,7 +18,11 @@ INT_BINARY_OP(lt_eq, type_bool, <=)
 INT_BINARY_OP(gt_eq, type_bool, >=)
 #undef INT_BINARY_OP
 
-#define BOOL_UNARY_OP(name, return_type, op) Value *type_bool_##name(Value *v1) { return mem_init(Value, v1, .type = &return_type, .value = op (bool)v1->value); }
+// BOOL
+
+Type type_bool;
+
+#define BOOL_UNARY_OP(name, return_type, op) Value *type_bool_##name(Value *v1) { return mem_init(Value, v1, .type = &return_type, .value = (void*) op (bool)v1->value); }
 BOOL_UNARY_OP(not, type_bool, !)
 #undef BOOL_UNARY_OP
 
@@ -28,6 +34,21 @@ BOOL_BINARY_OP(gt, type_bool, >)
 BOOL_BINARY_OP(lt_eq, type_bool, <=)
 BOOL_BINARY_OP(gt_eq, type_bool, >=)
 #undef BOOL_BINARY_OP
+
+
+
+
+
+
+Value *type_copy_value(Value *v) {
+  Value *result = mem_init(Value, v,
+    .type = v->type,
+    .value = v->value);
+
+  return result;
+}
+
+
 
 void init_types() {
   type_int = (Type) {
@@ -45,7 +66,8 @@ void init_types() {
       [BINARY_GT] = type_int_gt,
       [BINARY_LT_EQ] = type_int_lt_eq,
       [BINARY_GT_EQ] = type_int_gt_eq,
-    }
+    },
+    .copy = type_copy_value
   };
   type_bool = (Type) {
     .type = TYPE_BASIC,
@@ -61,6 +83,7 @@ void init_types() {
       [BINARY_GT] = type_bool_gt,
       [BINARY_LT_EQ] = type_bool_lt_eq,
       [BINARY_GT_EQ] = type_bool_gt_eq,
-    }
+    },
+    .copy = type_copy_value
   };
 }

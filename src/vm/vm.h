@@ -70,11 +70,13 @@ typedef struct Type {
 
   Value *(*unary_operators[UNARY_COUNT])(Value*);
   Value *(*binary_operators[BINARY_COUNT])(Value*, Value*);
+  
+  Value *(*copy)(Value*);
 
   //Struct *type_struct;
 } Type;
 
-void *type_alloc(Type *type);
+void *type_alloc(Type *type, void *parent);
 uint type_get_byte_width(Type *type);
 bool type_match(Type *type1, Type *type2);
 
@@ -87,6 +89,8 @@ typedef struct Value {
 
 Value *value_unary(UnaryOp op, Value *value);
 Value *value_binary(BinaryOp op, Value *value1, Value *value2);
+void   value_set(Value *v1, Value *v2);
+Value *value_copy(Value *value);
 
 // Variable
 
@@ -99,7 +103,8 @@ typedef struct Variable {
 
 typedef enum {
   EXPR_UNARY, EXPR_BINARY,
-  EXPR_LITERAL, EXPR_VAR_GET, EXPR_STRUCT_MEMBER_GET
+  EXPR_LITERAL, EXPR_VAR_GET, EXPR_STRUCT_MEMBER_GET,
+  EXPR_FUNC_CALL
 } ExpressionType;
 typedef struct Expression {
   ExpressionType type;
@@ -108,6 +113,7 @@ typedef struct Expression {
     struct { BinaryOp op; Expression *expr1; Expression *expr2; } binary;
     struct { Value *value; } literal;
     struct { char *name; } var_get;
+    struct { char *name; Expression **params; } func_call;
   };
 } Expression;
 
@@ -136,7 +142,10 @@ Value *statement_run(Statement *stmt, Context *ctx);
 typedef struct Function {
   char *name;
   Context *ctx;
+  Variable **parameters;
 } Function;
+
+Value *function_run(Function *f, Expression **parameters);
 
 // Context
 
@@ -149,7 +158,9 @@ typedef struct Context {
 } Context;
 
 Variable *context_variable_get(Context *ctx, const char *name);
-void context_set_parents(Context *ctx);
-int context_get_statement_index(Context *ctx, Statement *stmt);
-Value *context_run(Context *ctx);
-void context_free(Context *ctx);
+void      context_variable_set(Context *ctx, char *name, Value *value);
+Function *context_function_get(Context *ctx, const char *name);
+void      context_set_parents(Context *ctx);
+int       context_get_statement_index(Context *ctx, Statement *stmt);
+Value    *context_run(Context *ctx);
+void      context_free(Context *ctx);

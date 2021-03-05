@@ -26,9 +26,8 @@ int main(int argc, char **argv) {
         .name = "i1",
         .value = mem_init(Value, f1,
           .type = &type_int,
-          .value = 12)));
+          .value = 13)));
 
-    // fgehler
     Context *ctx_if = mem_init_cb(Context, f1, context_free, .parent = f1->ctx);
     arrput(ctx_if->statements,
       mem_init(Statement, f1,

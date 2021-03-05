@@ -1,49 +1,25 @@
 
-- LITERAL_EXPRESSIONS
-- VAR_GET/SET
-- CONSTRUCTOR
-
-
-
-
-
-
-- Basis Typ nur bytes
-- Interpretation angeben?
-- opt. byte länge prüfen
- -> nur debug
-- typesystem on top of that
-
-
 Missing for basic C functionality:
+- func call
 - string, bool, char, float
 - structs
 - arr/ptr
 - c libs
-- func call
+- enum/union
 - switch/for
 - funcPtr
-- enum/union
 
 Additional Features:
 - Namespaces
 - Generics
 - Metaprogramming
 - Modules
+- Operator Overloading
+
+Potential Features:
 - HighLevel Language?
   - Code produziert anderen Code
   - Abstrakte Logik in libs
 - WASM Wrapper
 - lib for generating files
-
-
-
-
-
-- Types Context
-- return Value struct
-- parameters
-- FUNC_CALL
-- C_CALL
-
 

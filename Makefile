@@ -2,7 +2,9 @@
 
 CC=gcc
 
-C_ARGS = -g -Wall -Wextra -pedantic
+TCC=../../../tcc/tcc
+
+C_ARGS = -g -Wall -Wextra -pedantic -O0
 C_ARGS += -Werror
 
 C_ARGS += -Wno-pointer-to-int-cast
@@ -24,7 +26,13 @@ OBJS_WIN += $(patsubst src/%.c, bin/win/%.o, $(wildcard src/*/*.c))
 OBJS_LINUX=
 OBJS_LINUX += $(patsubst src/%.c, bin/linux/%.o, $(wildcard src/*/*.c))
 
+
+
 .PRECIOUS: $(OBJS_WIN) $(OBJS_LINUX)
+.PHONY: loc tcc
+.SILENT: loc
+
+
 
 bin/win/%.o: src/%.c $(HEADERS)
 	mkdir -p $(@D)
@@ -46,12 +54,20 @@ bin/%: test/%.c $(OBJS_LINUX)
 	$(CC) test/$*.c $(OBJS_LINUX) -I $(INCLUDES) $(C_ARGS) -o bin/$*
 
 
+tcc/%.exe:
+	mkdir -p bin/tcc
+	$(TCC) test/$*.c src/*/*.c -I src -w -o bin/tcc/$*.exe
 
-
-.PHONY: loc
-.SILENT: loc
 
 loc:
-	echo "vm:    $(shell cat src/vm/* | wc -l)"
-	echo "util:  $(shell cat src/util/* | wc -l)"
-	echo "total: $(shell cat src/vm/* src/util/* | wc -l)"
+	echo "src"
+	printf "  vm:    %4s\n" $(shell cat src/vm/* | wc -l)
+	printf "  util:  %4s\n" $(shell cat src/util/* | wc -l)
+	echo   "  -----------"
+	printf "  total: %4s\n" $(shell cat src/*/* | wc -l)
+	echo
+	echo   "test"
+	printf "  .c:    %4s\n" $(shell cat test/*.c | wc -l)
+	printf "  .txt:  %4s\n" $(shell cat test/*.txt | wc -l)
+	echo   "  -----------"
+	printf "  total: %4s\n" $(shell cat test/* | wc -l)

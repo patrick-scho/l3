@@ -1,8 +1,10 @@
 #include "vm.h"
 
+#include "util/memory.h"
 
-void *type_alloc(Type *type) {
-  return malloc(type_get_byte_width(type));
+
+void *type_alloc(Type *type, void *parent) {
+  return mem_alloc_(type_get_byte_width(type), parent, NULL, NULL);
 }
 
 
