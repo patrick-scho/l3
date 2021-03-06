@@ -21,6 +21,40 @@ INT_BINARY_OP(lt_eq, type_bool, <=)
 INT_BINARY_OP(gt_eq, type_bool, >=)
 #undef INT_BINARY_OP
 
+// CHAR
+
+extern Type type_char;
+
+#define CHAR_BINARY_OP(name, return_type, op) Value *type_char_##name(Value *v1, Value *v2);
+CHAR_BINARY_OP(add, type_char, +)
+CHAR_BINARY_OP(sub, type_char, -)
+CHAR_BINARY_OP(mul, type_char, *)
+CHAR_BINARY_OP(div, type_char, /)
+CHAR_BINARY_OP(eq, type_bool, ==)
+CHAR_BINARY_OP(not_eq, type_bool, !=)
+CHAR_BINARY_OP(lt, type_bool, <)
+CHAR_BINARY_OP(gt, type_bool, >)
+CHAR_BINARY_OP(lt_eq, type_bool, <=)
+CHAR_BINARY_OP(gt_eq, type_bool, >=)
+#undef CHAR_BINARY_OP
+
+// FLOAT
+
+extern Type type_float;
+
+#define FLOAT_BINARY_OP(name, return_type, op) Value *type_float_##name(Value *v1, Value *v2);
+FLOAT_BINARY_OP(add, type_float, +)
+FLOAT_BINARY_OP(sub, type_float, -)
+FLOAT_BINARY_OP(mul, type_float, *)
+FLOAT_BINARY_OP(div, type_float, /)
+FLOAT_BINARY_OP(eq, type_bool, ==)
+FLOAT_BINARY_OP(not_eq, type_bool, !=)
+FLOAT_BINARY_OP(lt, type_bool, <)
+FLOAT_BINARY_OP(gt, type_bool, >)
+FLOAT_BINARY_OP(lt_eq, type_bool, <=)
+FLOAT_BINARY_OP(gt_eq, type_bool, >=)
+#undef FLOAT_BINARY_OP
+
 // BOOL
 
 extern Type type_bool;

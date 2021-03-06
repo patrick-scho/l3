@@ -27,11 +27,11 @@ int main(int argc, char **argv) {
     arrput(f1->parameters, mem_init(Variable, f1,
       .name = "a",
       .value = mem_init(Value, f1,
-        .type = &type_int)));
+        .type = &type_float)));
     arrput(f1->parameters, mem_init(Variable, f1,
       .name = "b",
       .value = mem_init(Value, f1,
-        .type = &type_int)));
+        .type = &type_float)));
     arrput(main->ctx->functions, f1);
 
 
@@ -40,16 +40,18 @@ int main(int argc, char **argv) {
       .type = EXPR_FUNC_CALL,
       .func_call.name = "f1");
 
+    union { float f; void *v; } f;
+    f.f = 123.5f;
     arrput(f1_call->func_call.params, mem_init(Expression, f1,
       .type = EXPR_LITERAL,
       .literal.value = mem_init(Value, f1,
-        .type = &type_int,
-        .value = 123)));
+        .type = &type_float,
+        .value = f.v)));
     arrput(f1_call->func_call.params, mem_init(Expression, f1,
       .type = EXPR_LITERAL,
       .literal.value = mem_init(Value, f1,
-        .type = &type_int,
-        .value = 12300)));
+        .type = &type_float,
+        .value = f.v)));
 
 
     arrput(main->ctx->statements, mem_init(Statement, main,
@@ -71,8 +73,8 @@ int main(int argc, char **argv) {
 
     Value *result = context_run(main->ctx);
 
-    //if (result.type == type_int)
-      printf("result: %d\n", (int)result->value);
+    f.v = result->value;
+    printf("result: %f\n", f.f);
   }
   
   mem_free(main);

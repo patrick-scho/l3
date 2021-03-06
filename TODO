@@ -1,7 +1,5 @@
 
 Missing for basic C functionality:
-- func call
-- string, bool, char, float
 - structs
 - arr/ptr
 - c libs
